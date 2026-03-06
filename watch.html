@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0A0F1C">
+<title>NT1 Watch</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body {
+    background: #0A0F1C;
+    color: #E2E8F0;
+    font-family: 'Courier New', monospace;
+    width: 100%;
+    min-height: 100vh;
+    overflow-x: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  
+  .watch-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px 4px;
+    width: 100%;
+  }
+
+  /* Header - minimal */
+  .w-header {
+    text-align: center;
+    padding: 4px 0 6px;
+    width: 100%;
+  }
+  .w-title {
+    font-size: 10px;
+    color: #4ADE80;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .w-time {
+    font-size: 9px;
+    color: #64748B;
+    margin-top: 2px;
+  }
+  .w-stats {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 4px;
+    font-size: 10px;
+  }
+  .w-stat { color: #94A3B8; }
+  .w-stat b { font-weight: 700; }
+
+  /* Pages */
+  .w-page { display: none; width: 100%; }
+  .w-page.active { display: flex; flex-direction: column; align-items: center; }
+
+  /* Navigation dots */
+  .w-dots {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    padding: 8px 0;
+  }
+  .w-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #1E293B; border: none; cursor: pointer;
+    padding: 0;
+  }
+  .w-dot.active { background: #4ADE80; }
+
+  /* Buttons grid */
+  .w-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    width: 100%;
+    padding: 0 8px;
+  }
+
+  .w-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    padding: 14px 4px;
+    border-radius: 14px;
+    border: 1px solid;
+    cursor: pointer;
+    font-family: inherit;
+    transition: transform 0.1s;
+    background: none;
+    min-height: 62px;
+  }
+  .w-btn:active { transform: scale(0.92); }
+  .w-btn .w-icon { font-size: 22px; line-height: 1; }
+  .w-btn .w-label { font-size: 8px; font-weight: 600; letter-spacing: 0.5px; }
+
+  .w-btn-full {
+    grid-column: span 2;
+    padding: 12px;
+    min-height: 50px;
+  }
+
+  /* Nap active state */
+  .w-nap-active { animation: wpulse 1.5s infinite; }
+  @keyframes wpulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.7;transform:scale(0.98)} }
+
+  /* Toast */
+  .w-toast {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #1E293B;
+    color: #F8FAFC;
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 11px;
+    z-index: 100;
+    text-align: center;
+    border: 1px solid #334155;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.6);
+    animation: wfadeIn 0.15s ease;
+    max-width: 80%;
+  }
+  @keyframes wfadeIn { from{opacity:0;transform:translate(-50%,-50%) scale(0.9)} to{opacity:1;transform:translate(-50%,-50%) scale(1)} }
+
+  /* Energy modal */
+  .w-energy-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.9);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 99;
+  }
+  .w-energy-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 4px;
+    padding: 8px;
+    width: 90%;
+    max-width: 220px;
+  }
+  .w-energy-btn {
+    padding: 10px 2px;
+    border: 1px solid #1E293B;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    text-align: center;
+    cursor: pointer;
+    font-family: inherit;
+    background: none;
+  }
+  .w-energy-btn:active { transform: scale(0.9); }
+  .w-energy-title {
+    text-align: center;
+    font-size: 10px;
+    color: #94A3B8;
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  .w-energy-cancel {
+    text-align: center;
+    margin-top: 8px;
+    font-size: 9px;
+    color: #475569;
+    cursor: pointer;
+    background: none; border: none;
+    font-family: inherit;
+    padding: 6px 16px;
+  }
+
+  /* Section label */
+  .w-section {
+    font-size: 8px;
+    color: #475569;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    text-align: center;
+    padding: 6px 0 4px;
+    width: 100%;
+  }
+</style>
+</head>
+<body>
+<div class="watch-container" id="app"></div>
+
+<script>
+var DB_KEY = 'nt1_events_v3';
+var events = JSON.parse(localStorage.getItem(DB_KEY) || '[]');
+var napActive = false;
+var currentPage = 0;
+var toast = null;
+var toastTimer = null;
+var showEnergy = false;
+
+// Check nap
+var lns = events.find(function(e){return e.type==='NAP_START'});
+var lne = events.find(function(e){return e.type==='NAP_END'});
+if (lns && (!lne || new Date(lns.ts) > new Date(lne.ts))) napActive = true;
+
+function save() { localStorage.setItem(DB_KEY, JSON.stringify(events)); }
+function today() { return new Date().toISOString().split('T')[0]; }
+function uid() { return Date.now().toString(36) + Math.random().toString(36).substr(2,5); }
+
+function log(type, extra) {
+  extra = extra || {};
+  var ev = { id: uid(), type: type, ts: new Date().toISOString(), date: today() };
+  for (var k in extra) ev[k] = extra[k];
+  events.unshift(ev);
+  if (type === 'NAP_START') napActive = true;
+  if (type === 'NAP_END') napActive = false;
+  save();
+
+  // Labels
+  var labels = {
+    ZYDILO: '\u{1F48A} Zydilo', COFFEE: '\u2615 Caf\u00e9', NAP_START: '\u{1F634} Siesta',
+    NAP_END: '\u23F0 Fin siesta', SDE: '\u{1F534} SDE', CATAPLEXY: '\u26A0\uFE0F Cataplej\u00eda',
+    ENERGY: '\u{1F4CA} Energ\u00eda '+(extra.energy||''), GI: '\u{1F525} GI',
+    GRIPPER: '\u270A Activaci\u00f3n', MEAL_LC: '\u{1F95A} Comida LC',
+    ROMERO: '\u{1F33F} Romero', CREATINE: '\u26A1 Creatina',
+    MEAL_CARB: '\u{1F35E} Carbos', WAKE_NIGHT: '\u{1F319} Despertar',
+    DREAM: '\u{1F4AD} Sue\u00f1o'
+  };
+  showToast(labels[type] || type);
+  render();
+}
+
+function showToast(msg) {
+  toast = msg;
+  render();
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ toast = null; render(); }, 1800);
+}
+
+function setPage(p) { currentPage = p; render(); }
+
+function render() {
+  var todayStr = today();
+  var zydiloToday = events.filter(function(e){return e.date===todayStr && e.type==='ZYDILO'}).length;
+  var coffeeToday = events.filter(function(e){return e.date===todayStr && e.type==='COFFEE'}).length;
+  var now = new Date();
+
+  var h = '';
+
+  // Header
+  h += '<div class="w-header">';
+  h += '<div class="w-title">\u25CE NT1</div>';
+  h += '<div class="w-time">'+now.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit',hour12:false})+'</div>';
+  h += '<div class="w-stats">';
+  h += '<span class="w-stat">\u{1F48A} <b style="color:#4ADE80">'+(zydiloToday*50)+'</b>mg</span>';
+  h += '<span class="w-stat">\u2615 <b style="color:#F59E0B">'+coffeeToday+'</b></span>';
+  if (napActive) h += '<span class="w-stat" style="color:#818CF8">\u{1F634} ACTIVA</span>';
+  h += '</div></div>';
+
+  // Page dots
+  h += '<div class="w-dots">';
+  for (var i=0; i<3; i++) {
+    h += '<button class="w-dot '+(currentPage===i?'active':'')+'" onclick="setPage('+i+')"></button>';
+  }
+  h += '</div>';
+
+  // === PAGE 0: Primary actions ===
+  h += '<div class="w-page '+(currentPage===0?'active':'')+'">';
+  h += '<div class="w-section">Farmacolog\u00eda</div>';
+  h += '<div class="w-grid">';
+  h += '<button class="w-btn" style="border-color:#4ADE8033;color:#4ADE80" onclick="log(\'ZYDILO\')"><span class="w-icon">\u{1F48A}</span><span class="w-label">ZYDILO</span></button>';
+  h += '<button class="w-btn" style="border-color:#F59E0B33;color:#F59E0B" onclick="log(\'COFFEE\')"><span class="w-icon">\u2615</span><span class="w-label">CAF\u00c9</span></button>';
+
+  // Nap button
+  if (napActive) {
+    h += '<button class="w-btn w-btn-full w-nap-active" style="border-color:#F59E0B44;color:#F59E0B;background:#F59E0B11" onclick="log(\'NAP_END\')"><span class="w-icon">\u23F0</span><span class="w-label">TERMINAR SIESTA</span></button>';
+  } else {
+    h += '<button class="w-btn w-btn-full" style="border-color:#818CF833;color:#818CF8" onclick="log(\'NAP_START\')"><span class="w-icon">\u{1F634}</span><span class="w-label">INICIAR SIESTA</span></button>';
+  }
+
+  h += '<button class="w-btn" style="border-color:#E2E8F033;color:#E2E8F0" onclick="showEnergy=true;render()"><span class="w-icon">\u{1F4CA}</span><span class="w-label">ENERG\u00cdA</span></button>';
+  h += '<button class="w-btn" style="border-color:#EF444433;color:#EF4444" onclick="log(\'SDE\')"><span class="w-icon">\u{1F534}</span><span class="w-label">SDE</span></button>';
+  h += '</div></div>';
+
+  // === PAGE 1: Clinical + Body ===
+  h += '<div class="w-page '+(currentPage===1?'active':'')+'">';
+  h += '<div class="w-section">Cl\u00ednico y Cuerpo</div>';
+  h += '<div class="w-grid">';
+  h += '<button class="w-btn" style="border-color:#F8717133;color:#F87171" onclick="log(\'CATAPLEXY\',{trigger:\'R\u00e1pido\'})"><span class="w-icon">\u26A0\uFE0F</span><span class="w-label">CATAPLEJ\u00cdA</span></button>';
+  h += '<button class="w-btn" style="border-color:#FB718533;color:#FB7185" onclick="log(\'GI\')"><span class="w-icon">\u{1F525}</span><span class="w-label">MALESTAR GI</span></button>';
+  h += '<button class="w-btn" style="border-color:#06B6D433;color:#06B6D4" onclick="log(\'GRIPPER\')"><span class="w-icon">\u270A</span><span class="w-label">ACTIVACI\u00d3N</span></button>';
+  h += '<button class="w-btn" style="border-color:#A78BFA33;color:#A78BFA" onclick="log(\'WAKE_NIGHT\')"><span class="w-icon">\u{1F319}</span><span class="w-label">DESPERTAR</span></button>';
+  h += '<button class="w-btn" style="border-color:#C084FC33;color:#C084FC" onclick="log(\'DREAM\')"><span class="w-icon">\u{1F4AD}</span><span class="w-label">SUE\u00d1O</span></button>';
+  h += '<button class="w-btn" style="border-color:#34D39933;color:#34D399" onclick="log(\'ROMERO\')"><span class="w-icon">\u{1F33F}</span><span class="w-label">ROMERO</span></button>';
+  h += '</div></div>';
+
+  // === PAGE 2: Nutrition ===
+  h += '<div class="w-page '+(currentPage===2?'active':'')+'">';
+  h += '<div class="w-section">Nutrici\u00f3n</div>';
+  h += '<div class="w-grid">';
+  h += '<button class="w-btn" style="border-color:#60A5FA33;color:#60A5FA" onclick="log(\'MEAL_LC\')"><span class="w-icon">\u{1F95A}</span><span class="w-label">LOW-CARB</span></button>';
+  h += '<button class="w-btn" style="border-color:#FB923C33;color:#FB923C" onclick="log(\'MEAL_CARB\')"><span class="w-icon">\u{1F35E}</span><span class="w-label">CARBOS</span></button>';
+  h += '<button class="w-btn" style="border-color:#A78BFA33;color:#A78BFA" onclick="log(\'CREATINE\')"><span class="w-icon">\u26A1</span><span class="w-label">CREATINA</span></button>';
+  h += '<button class="w-btn" style="border-color:#34D39933;color:#34D399" onclick="log(\'ROMERO\')"><span class="w-icon">\u{1F33F}</span><span class="w-label">ROMERO</span></button>';
+  h += '</div></div>';
+
+  // Energy overlay
+  if (showEnergy) {
+    h += '<div class="w-energy-overlay" onclick="showEnergy=false;render()">';
+    h += '<div onclick="event.stopPropagation()">';
+    h += '<div class="w-energy-title">Energ\u00eda ahora</div>';
+    h += '<div class="w-energy-grid">';
+    for (var j=1;j<=10;j++) {
+      var c = j<=3?'#EF4444':j<=6?'#F59E0B':'#4ADE80';
+      var bg = j<=3?'#EF444422':j<=6?'#F59E0B22':'#4ADE8022';
+      h += '<button class="w-energy-btn" style="background:'+bg+';color:'+c+'" onclick="showEnergy=false;log(\'ENERGY\',{energy:'+j+'})">'+j+'</button>';
+    }
+    h += '</div>';
+    h += '<button class="w-energy-cancel" onclick="showEnergy=false;render()">Cancelar</button>';
+    h += '</div></div>';
+  }
+
+  // Toast
+  if (toast) h += '<div class="w-toast">'+toast+'</div>';
+
+  document.getElementById('app').innerHTML = h;
+}
+
+// Swipe detection for page navigation
+var touchStartX = 0;
+document.addEventListener('touchstart', function(e) { touchStartX = e.touches[0].clientX; });
+document.addEventListener('touchend', function(e) {
+  var diff = touchStartX - e.changedTouches[0].clientX;
+  if (Math.abs(diff) > 40) {
+    if (diff > 0 && currentPage < 2) { currentPage++; render(); }
+    else if (diff < 0 && currentPage > 0) { currentPage--; render(); }
+  }
+});
+
+// Update clock
+setInterval(render, 60000);
+render();
+</script>
+</body>
+</html>
