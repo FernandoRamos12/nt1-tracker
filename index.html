@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0A0F1C">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="NT1 Tracker">
+<link rel="manifest" href="manifest.json">
+<title>Fernando 2.0 — Sistema NT1</title>
+<style>
+  :root {
+    --bg: #0A0F1C;
+    --bg2: #0F172A;
+    --bg3: #1E293B;
+    --border: #1E293B;
+    --text: #E2E8F0;
+    --text2: #94A3B8;
+    --text3: #64748B;
+    --text4: #475569;
+    --green: #4ADE80;
+    --yellow: #F59E0B;
+    --blue: #60A5FA;
+    --orange: #FB923C;
+    --purple: #A78BFA;
+    --indigo: #818CF8;
+    --red: #EF4444;
+    --redLight: #F87171;
+    --teal: #06B6D4;
+    --mint: #34D399;
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body {
+    font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow-x: hidden;
+    padding-top: var(--safe-top);
+    padding-bottom: calc(60px + var(--safe-bottom));
+  }
+  button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+  button:active { transform: scale(0.96); }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(180deg, var(--bg2) 0%, var(--bg) 100%);
+    padding: 16px 16px 12px;
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 50;
+  }
+  .header-row { display: flex; justify-content: space-between; align-items: center; }
+  .header-label { font-size: 10px; color: var(--text3); letter-spacing: 2px; text-transform: uppercase; }
+  .header-title { font-size: 20px; font-weight: 700; color: #F8FAFC; margin-top: 2px; }
+  .header-time { font-size: 14px; color: var(--green); font-weight: 600; }
+  .header-date { font-size: 11px; color: var(--text3); }
+
+  /* QUICK STATS */
+  .stats { display: flex; gap: 6px; margin-top: 10px; }
+  .stat {
+    flex: 1; background: var(--bg3); border-radius: 8px; padding: 8px 8px;
+    border-left: 3px solid var(--text4);
+  }
+  .stat-label { font-size: 9px; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; }
+  .stat-val { font-size: 17px; font-weight: 700; margin-top: 2px; }
+  .stat-unit { font-size: 9px; color: var(--text3); margin-left: 3px; }
+
+  /* NAV */
+  .nav { display: flex; background: var(--bg2); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 40; }
+  .nav button {
+    flex: 1; padding: 10px 8px; font-size: 12px; font-weight: 400; color: var(--text3);
+    border-bottom: 2px solid transparent; transition: all 0.2s;
+  }
+  .nav button.active { color: #F8FAFC; font-weight: 600; background: var(--bg3); border-bottom-color: var(--green); }
+
+  /* SECTION */
+  .section { padding: 0 16px; margin-top: 16px; }
+  .section-title {
+    font-size: 10px; color: var(--text3); letter-spacing: 1.5px; text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  /* BUTTONS */
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+
+  .btn-event {
+    padding: 14px 10px; border-radius: 10px; display: flex; flex-direction: column;
+    align-items: center; gap: 5px; font-weight: 600; transition: all 0.15s;
+  }
+  .btn-event .icon { font-size: 22px; }
+  .btn-event .label { font-size: 12px; }
+
+  .btn-sm {
+    padding: 11px; border-radius: 10px; display: flex; align-items: center;
+    justify-content: center; gap: 6px; font-size: 12px; font-weight: 600;
+  }
+
+  .btn-colored { border: 1px solid; }
+
+  /* TIMELINE */
+  .timeline { border-left: 2px solid var(--bg3); padding-left: 16px; margin-top: 12px; }
+  .timeline-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 7px 0; position: relative;
+  }
+  .timeline-dot {
+    position: absolute; left: -22px; width: 10px; height: 10px;
+    border-radius: 50%; border: 2px solid var(--bg);
+  }
+  .timeline-info { display: flex; align-items: center; gap: 8px; }
+  .timeline-time { font-size: 11px; color: var(--text3); min-width: 42px; }
+  .timeline-label { font-size: 12px; }
+  .timeline-extra { font-size: 11px; color: var(--text3); }
+  .btn-delete { color: var(--text4); font-size: 14px; padding: 4px 8px; }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: flex;
+    align-items: flex-end; justify-content: center; z-index: 999; padding: 16px;
+  }
+  .modal {
+    background: var(--bg2); border: 1px solid var(--border); border-radius: 16px;
+    padding: 20px; width: 100%; max-width: 400px;
+  }
+  .modal-title { font-size: 14px; font-weight: 600; margin-bottom: 14px; text-align: center; }
+  .modal-sub { font-size: 11px; color: var(--text3); margin-bottom: 12px; text-align: center; }
+
+  .energy-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 8px; }
+  .energy-btn {
+    padding: 12px 8px; border: 1px solid var(--border); border-radius: 8px;
+    font-size: 16px; font-weight: 700; text-align: center;
+  }
+  .energy-labels { display: flex; justify-content: space-between; font-size: 10px; color: var(--text4); padding: 0 4px; }
+
+  .trigger-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .trigger-btn {
+    padding: 12px; border: 1px solid rgba(248,113,113,0.2); border-radius: 8px;
+    background: rgba(248,113,113,0.07); color: var(--redLight); font-size: 12px; font-weight: 500;
+  }
+
+  /* EXPORT */
+  .export-card {
+    background: var(--bg2); border: 1px solid var(--border); border-radius: 10px;
+    padding: 16px; margin-bottom: 16px;
+  }
+  .export-card h3 { font-size: 14px; font-weight: 600; color: #F8FAFC; margin-bottom: 8px; }
+  .export-stat { font-size: 12px; color: var(--text2); line-height: 1.9; }
+  .export-val { font-weight: 600; }
+  .btn-export {
+    width: 100%; padding: 14px; border: 1px solid var(--green); border-radius: 10px;
+    background: rgba(74,222,128,0.13); color: var(--green); font-size: 14px; font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .btn-danger {
+    width: 100%; padding: 10px; border: 1px solid rgba(71,85,105,0.2); border-radius: 8px;
+    color: var(--text3); font-size: 12px; margin-top: 20px;
+  }
+
+  /* HISTORY */
+  .day-btn {
+    width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px;
+    background: var(--bg2); color: var(--text); font-size: 13px; font-weight: 500;
+    display: flex; justify-content: space-between; align-items: center; text-align: left;
+    margin-bottom: 8px;
+  }
+  .day-btn.active { background: var(--bg3); }
+  .day-count { color: var(--text3); font-size: 11px; }
+  .day-events { padding: 4px 0 8px 12px; border-left: 2px solid var(--bg3); margin-left: 12px; margin-bottom: 8px; }
+  .day-event { display: flex; align-items: center; gap: 8px; padding: 5px 0; font-size: 12px; }
+  .day-event-time { color: var(--text3); min-width: 42px; }
+
+  .empty { text-align: center; color: var(--text4); padding: 40px 20px; font-size: 13px; }
+
+  /* NAP PULSE */
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.6} }
+  .nap-active { animation: pulse 2s infinite; }
+
+  /* TOAST */
+  .toast {
+    position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+    background: var(--bg3); color: #F8FAFC; padding: 10px 20px; border-radius: 8px;
+    font-size: 13px; z-index: 1000; border: 1px solid var(--border);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    animation: fadeIn 0.2s ease;
+  }
+  @keyframes fadeIn { from{opacity:0;transform:translateX(-50%) translateY(-10px)} to{opacity:1;transform:translateX(-50%) translateY(0)} }
+
+  /* NOTES INPUT */
+  .notes-input {
+    width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px;
+    background: var(--bg); color: var(--text); font-family: inherit; font-size: 12px;
+    margin-top: 10px; resize: none;
+  }
+  .notes-input::placeholder { color: var(--text4); }
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+// ============================================================
+// NT1 TRACKER — Fernando 2.0
+// Progressive Web App — Standalone
+// ============================================================
+
+const DB_KEY = 'nt1_events_v3';
+const TYPES = {
+  ZYDILO:      { label:'Zydilo 50mg',      icon:'💊', color:'#4ADE80', cat:'pharma' },
+  COFFEE:      { label:'Café ¼ taza',       icon:'☕', color:'#F59E0B', cat:'stimulant' },
+  MEAL_LC:     { label:'Comida Low-Carb',   icon:'🥚', color:'#60A5FA', cat:'nutrition' },
+  MEAL_CARB:   { label:'Comida c/Carbos',   icon:'🍞', color:'#FB923C', cat:'nutrition' },
+  CREATINE:    { label:'Creatina 5g',       icon:'⚡', color:'#A78BFA', cat:'supplement' },
+  ROMERO:      { label:'Romero 300ml',      icon:'🌿', color:'#34D399', cat:'supplement' },
+  NAP_START:   { label:'Siesta Inicio',     icon:'😴', color:'#818CF8', cat:'sleep' },
+  NAP_END:     { label:'Siesta Fin',        icon:'⏰', color:'#818CF8', cat:'sleep' },
+  CATAPLEXY:   { label:'Cataplejía',        icon:'⚠️', color:'#F87171', cat:'clinical' },
+  SDE:         { label:'Ataque SDE',        icon:'🔴', color:'#EF4444', cat:'clinical' },
+  GRIPPER:     { label:'Micro-activación',  icon:'✊', color:'#06B6D4', cat:'activation' },
+  ENERGY:      { label:'Energía',           icon:'📊', color:'#E2E8F0', cat:'metric' },
+};
+
+// State
+let state = {
+  events: JSON.parse(localStorage.getItem(DB_KEY) || '[]'),
+  view: 'log',
+  napActive: false,
+  modal: null, // 'energy' | 'cataplexy' | null
+  selectedDate: '',
+  toast: null,
+};
+
+// Check if nap is active
+const lastNapStart = state.events.find(e => e.type === 'NAP_START');
+const lastNapEnd = state.events.find(e => e.type === 'NAP_END');
+if (lastNapStart && (!lastNapEnd || new Date(lastNapStart.ts) > new Date(lastNapEnd.ts))) {
+  state.napActive = true;
+}
+
+function save() { localStorage.setItem(DB_KEY, JSON.stringify(state.events)); }
+
+function today() { return new Date().toISOString().split('T')[0]; }
+
+function fmtTime(iso) {
+  const d = new Date(iso);
+  return d.toLocaleTimeString('es-MX', { hour:'2-digit', minute:'2-digit', hour12:false });
+}
+
+function fmtDate(dateStr) {
+  const d = new Date(dateStr + 'T12:00:00');
+  return d.toLocaleDateString('es-MX', { weekday:'long', day:'numeric', month:'short' });
+}
+
+function uid() { return Date.now().toString(36) + Math.random().toString(36).substr(2,5); }
+
+function logEvent(type, extra = {}) {
+  const ev = { id: uid(), type, ts: new Date().toISOString(), date: today(), ...extra };
+  state.events.unshift(ev);
+  if (type === 'NAP_START') state.napActive = true;
+  if (type === 'NAP_END') state.napActive = false;
+  save();
+  showToast(TYPES[type].icon + ' ' + TYPES[type].label + ' registrado');
+  render();
+}
+
+function deleteEvent(id) {
+  state.events = state.events.filter(e => e.id !== id);
+  save();
+  showToast('Evento eliminado');
+  render();
+}
+
+let toastTimer = null;
+function showToast(msg) {
+  state.toast = msg;
+  render();
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { state.toast = null; render(); }, 2500);
+}
+
+function setView(v) { state.view = v; render(); }
+function setModal(m) { state.modal = m; render(); }
+function toggleDate(d) { state.selectedDate = state.selectedDate === d ? '' : d; render(); }
+
+function exportCSV() {
+  const h = 'Fecha,Hora,Evento,Categoría,Nivel Energía,Gatillo Cataplejía\n';
+  const rows = [...state.events].sort((a,b) => new Date(a.ts)-new Date(b.ts)).map(e => {
+    const t = TYPES[e.type];
+    return `${e.date},${fmtTime(e.ts)},${t.label},${t.cat},${e.energy||''},${e.trigger||''}`;
+  }).join('\n');
+  const blob = new Blob([h+rows], {type:'text/csv;charset=utf-8;'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'NT1_Expediente_' + today() + '.csv';
+  a.click();
+}
+
+function clearAll() {
+  if (confirm('¿Borrar TODOS los registros? No se puede deshacer.')) {
+    state.events = [];
+    save();
+    showToast('Datos eliminados');
+    render();
+  }
+}
+
+// ============================================================
+// RENDER
+// ============================================================
+function render() {
+  const now = new Date();
+  const todayStr = today();
+  const todayEvents = state.events.filter(e => e.date === todayStr).sort((a,b) => new Date(a.ts)-new Date(b.ts));
+  const zydiloToday = state.events.filter(e => e.date === todayStr && e.type === 'ZYDILO').length;
+  const coffeeToday = state.events.filter(e => e.date === todayStr && e.type === 'COFFEE').length;
+  const uniqueDates = [...new Set(state.events.map(e => e.date))].sort().reverse();
+
+  const colorStyle = (c, opacity) => `border:1px solid ${c}33;background:${c}${opacity};color:${c};`;
+
+  let html = '';
+
+  // HEADER
+  html += `<div class="header">
+    <div class="header-row">
+      <div>
+        <div class="header-label">Sistema NT1</div>
+        <div class="header-title">Fernando 2.0</div>
+      </div>
+      <div style="text-align:right">
+        <div class="header-date">${fmtDate(todayStr)}</div>
+        <div class="header-time">${now.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit',hour12:false})}</div>
+      </div>
+    </div>
+    <div class="stats">
+      <div class="stat" style="border-left-color:var(--green)">
+        <div class="stat-label">Zydilo</div>
+        <div class="stat-val" style="color:var(--green)">${zydiloToday*50}mg<span class="stat-unit">/ 200</span></div>
+      </div>
+      <div class="stat" style="border-left-color:var(--yellow)">
+        <div class="stat-label">Café</div>
+        <div class="stat-val" style="color:var(--yellow)">${coffeeToday}<span class="stat-unit">dosis</span></div>
+      </div>
+      <div class="stat" style="border-left-color:${state.napActive?'var(--indigo)':'var(--text4)'}">
+        <div class="stat-label">Siesta</div>
+        <div class="stat-val" style="color:${state.napActive?'var(--indigo)':'var(--text4)'}">${state.napActive?'ACTIVA':'—'}</div>
+      </div>
+    </div>
+  </div>`;
+
+  // NAV
+  html += `<div class="nav">
+    <button class="${state.view==='log'?'active':''}" onclick="setView('log')">Registrar</button>
+    <button class="${state.view==='history'?'active':''}" onclick="setView('history')">Historial</button>
+    <button class="${state.view==='export'?'active':''}" onclick="setView('export')">Expediente</button>
+  </div>`;
+
+  // ====== LOG VIEW ======
+  if (state.view === 'log') {
+    // Pharma
+    html += `<div class="section">
+      <div class="section-title">Farmacología</div>
+      <div class="grid2">
+        <button class="btn-event btn-colored" style="${colorStyle('#4ADE80','11')}" onclick="logEvent('ZYDILO')">
+          <span class="icon">💊</span><span class="label">Zydilo 50mg</span>
+        </button>
+        <button class="btn-event btn-colored" style="${colorStyle('#F59E0B','11')}" onclick="logEvent('COFFEE')">
+          <span class="icon">☕</span><span class="label">Café ¼ taza</span>
+        </button>
+      </div>
+    </div>`;
+
+    // Nutrition
+    html += `<div class="section">
+      <div class="section-title">Nutrición</div>
+      <div class="grid3">
+        <button class="btn-event btn-colored" style="${colorStyle('#60A5FA','11')}" onclick="logEvent('MEAL_LC')">
+          <span class="icon">🥚</span><span class="label">Low-Carb</span>
+        </button>
+        <button class="btn-event btn-colored" style="${colorStyle('#FB923C','11')}" onclick="logEvent('MEAL_CARB')">
+          <span class="icon">🍞</span><span class="label">c/Carbos</span>
+        </button>
+        <button class="btn-event btn-colored" style="${colorStyle('#A78BFA','11')}" onclick="logEvent('CREATINE')">
+          <span class="icon">⚡</span><span class="label">Creatina</span>
+        </button>
+      </div>
+    </div>`;
+
+    // Sleep & Clinical
+    const napColor = state.napActive ? '#F59E0B' : '#818CF8';
+    const napLabel = state.napActive ? 'Terminar Siesta' : 'Iniciar Siesta';
+    const napIcon = state.napActive ? '⏰' : '😴';
+    const napType = state.napActive ? 'NAP_END' : 'NAP_START';
+    const napClass = state.napActive ? 'nap-active' : '';
+
+    html += `<div class="section">
+      <div class="section-title">Sueño y Eventos Clínicos</div>
+      <div class="grid2">
+        <button class="btn-event btn-colored ${napClass}" style="${colorStyle(napColor,'15')}" onclick="logEvent('${napType}')">
+          <span class="icon">${napIcon}</span><span class="label">${napLabel}</span>
+        </button>
+        <button class="btn-event btn-colored" style="${colorStyle('#F87171','11')}" onclick="setModal('cataplexy')">
+          <span class="icon">⚠️</span><span class="label">Cataplejía</span>
+        </button>
+      </div>
+      <div class="grid2" style="margin-top:8px">
+        <button class="btn-sm btn-colored" style="${colorStyle('#EF4444','11')}" onclick="logEvent('SDE')">
+          🔴 Ataque SDE
+        </button>
+        <button class="btn-sm btn-colored" style="${colorStyle('#E2E8F0','11')}" onclick="setModal('energy')">
+          📊 Energía Ahora
+        </button>
+      </div>
+    </div>`;
+
+    // Activation
+    html += `<div class="section">
+      <div class="section-title">Activación y Suplementos</div>
+      <div class="grid2">
+        <button class="btn-sm btn-colored" style="${colorStyle('#06B6D4','11')}" onclick="logEvent('GRIPPER')">
+          ✊ Micro-activación
+        </button>
+        <button class="btn-sm btn-colored" style="${colorStyle('#34D399','11')}" onclick="logEvent('ROMERO')">
+          🌿 Romero 300ml
+        </button>
+      </div>
+    </div>`;
+
+    // Today timeline
+    if (todayEvents.length > 0) {
+      html += `<div class="section" style="margin-bottom:20px">
+        <div class="section-title">Registro de hoy</div>
+        <div class="timeline">`;
+      todayEvents.forEach(ev => {
+        const t = TYPES[ev.type];
+        let extra = '';
+        if (ev.energy) extra = ` — ${ev.energy}/10`;
+        if (ev.trigger) extra = ` — ${ev.trigger}`;
+        html += `<div class="timeline-item">
+          <div class="timeline-dot" style="background:${t.color}"></div>
+          <div class="timeline-info">
+            <span class="timeline-time">${fmtTime(ev.ts)}</span>
+            <span>${t.icon}</span>
+            <span class="timeline-label" style="color:${t.color}">${t.label}${extra}</span>
+          </div>
+          <button class="btn-delete" onclick="deleteEvent('${ev.id}')">×</button>
+        </div>`;
+      });
+      html += `</div></div>`;
+    }
+  }
+
+  // ====== HISTORY VIEW ======
+  if (state.view === 'history') {
+    html += `<div class="section">
+      <div class="section-title">Historial (${state.events.length} registros)</div>`;
+    if (uniqueDates.length === 0) {
+      html += `<div class="empty">Sin registros todavía.<br>Empieza registrando tu primer evento.</div>`;
+    } else {
+      uniqueDates.forEach(date => {
+        const dayEvs = state.events.filter(e => e.date === date).sort((a,b) => new Date(a.ts)-new Date(b.ts));
+        const active = state.selectedDate === date;
+        html += `<button class="day-btn ${active?'active':''}" onclick="toggleDate('${date}')">
+          <span>${fmtDate(date)}</span>
+          <span class="day-count">${dayEvs.length} eventos</span>
+        </button>`;
+        if (active) {
+          html += `<div class="day-events">`;
+          dayEvs.forEach(ev => {
+            const t = TYPES[ev.type];
+            let extra = '';
+            if (ev.energy) extra = `<span style="color:var(--text3)"> — ${ev.energy}/10</span>`;
+            if (ev.trigger) extra = `<span style="color:var(--text3)"> — ${ev.trigger}</span>`;
+            html += `<div class="day-event">
+              <span class="day-event-time">${fmtTime(ev.ts)}</span>
+              <span>${t.icon}</span>
+              <span style="color:${t.color}">${t.label}</span>${extra}
+            </div>`;
+          });
+          html += `</div>`;
+        }
+      });
+    }
+    html += `</div>`;
+  }
+
+  // ====== EXPORT VIEW ======
+  if (state.view === 'export') {
+    const nSde = state.events.filter(e => e.type === 'SDE').length;
+    const nCat = state.events.filter(e => e.type === 'CATAPLEXY').length;
+    const nNap = state.events.filter(e => e.type === 'NAP_START').length;
+    const nZyd = state.events.filter(e => e.type === 'ZYDILO').length;
+
+    html += `<div class="section">
+      <div class="section-title">Expediente Clínico NT1</div>
+      <div class="export-card">
+        <h3>Resumen de Datos</h3>
+        <div class="export-stat">
+          Total de registros: <span class="export-val" style="color:var(--green)">${state.events.length}</span><br>
+          Días registrados: <span class="export-val" style="color:var(--green)">${uniqueDates.length}</span><br>
+          Dosis Zydilo: <span class="export-val" style="color:var(--green)">${nZyd}</span><br>
+          Episodios cataplejía: <span class="export-val" style="color:var(--redLight)">${nCat}</span><br>
+          Ataques SDE: <span class="export-val" style="color:var(--red)">${nSde}</span><br>
+          Siestas registradas: <span class="export-val" style="color:var(--indigo)">${nNap}</span>
+        </div>
+      </div>
+      <button class="btn-export" onclick="exportCSV()">📥 Exportar CSV (para Neurólogo)</button>
+      <div style="font-size:11px;color:var(--text4);text-align:center;margin-top:8px">
+        El CSV se abre en Excel o se importa en Notion.<br>Cada registro incluye timestamp y contexto.
+      </div>
+      <button class="btn-danger" onclick="clearAll()">Borrar todos los datos</button>
+    </div>`;
+  }
+
+  // ====== MODALS ======
+  if (state.modal === 'energy') {
+    html += `<div class="modal-overlay" onclick="setModal(null)">
+      <div class="modal" onclick="event.stopPropagation()">
+        <div class="modal-title">¿Cómo está tu energía ahora?</div>
+        <div class="energy-grid">`;
+    for (let i = 1; i <= 10; i++) {
+      const c = i<=3 ? 'var(--red)' : i<=6 ? 'var(--yellow)' : 'var(--green)';
+      const bg = i<=3 ? '#EF444422' : i<=6 ? '#F59E0B22' : '#4ADE8022';
+      html += `<button class="energy-btn" style="background:${bg};color:${c}" 
+        onclick="logEvent('ENERGY',{energy:${i}});setModal(null)">${i}</button>`;
+    }
+    html += `</div>
+        <div class="energy-labels"><span>Apagado</span><span>Neutro</span><span>Al 100%</span></div>
+      </div></div>`;
+  }
+
+  if (state.modal === 'cataplexy') {
+    html += `<div class="modal-overlay" onclick="setModal(null)">
+      <div class="modal" onclick="event.stopPropagation()">
+        <div class="modal-title" style="color:var(--redLight)">⚠️ Registrar Cataplejía</div>
+        <div class="modal-sub">¿Qué detonó el episodio?</div>
+        <div class="trigger-grid">`;
+    ['Risa','Susto','Sorpresa','Estrés','Emoción fuerte','Otro'].forEach(t => {
+      html += `<button class="trigger-btn" onclick="logEvent('CATAPLEXY',{trigger:'${t}'});setModal(null)">${t}</button>`;
+    });
+    html += `</div></div></div>`;
+  }
+
+  // TOAST
+  if (state.toast) {
+    html += `<div class="toast">${state.toast}</div>`;
+  }
+
+  document.getElementById('app').innerHTML = html;
+}
+
+// Clock update
+setInterval(() => { if (state.view === 'log') render(); }, 60000);
+
+// Initial render
+render();
+
+// Register Service Worker
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+</script>
+</body>
+</html>
