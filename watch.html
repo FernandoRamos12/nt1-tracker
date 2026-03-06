@@ -11,336 +11,207 @@
     background: #0A0F1C;
     color: #E2E8F0;
     font-family: 'Courier New', monospace;
-    width: 100%;
-    min-height: 100vh;
-    overflow-x: hidden;
+    width: 100%; height: 100vh;
+    overflow: hidden;
     user-select: none;
     -webkit-user-select: none;
   }
-  
-  .watch-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 8px 4px;
-    width: 100%;
+
+  .watch {
+    width: 100%; height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 12% 8%;
+    position: relative;
   }
 
-  /* Header - minimal */
   .w-header {
     text-align: center;
-    padding: 4px 0 6px;
-    width: 100%;
+    flex-shrink: 0;
+    margin-bottom: 4px;
   }
-  .w-title {
-    font-size: 10px;
-    color: #4ADE80;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-  }
-  .w-time {
-    font-size: 9px;
-    color: #64748B;
-    margin-top: 2px;
-  }
+  .w-title { font-size: 9px; color: #4ADE80; font-weight: 700; letter-spacing: 2px; }
   .w-stats {
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-    margin-top: 4px;
-    font-size: 10px;
+    display: flex; justify-content: center; gap: 10px;
+    margin-top: 3px; font-size: 9px;
   }
   .w-stat { color: #94A3B8; }
   .w-stat b { font-weight: 700; }
 
-  /* Pages */
-  .w-page { display: none; width: 100%; }
-  .w-page.active { display: flex; flex-direction: column; align-items: center; }
-
-  /* Navigation dots */
   .w-dots {
-    display: flex;
-    gap: 6px;
-    justify-content: center;
-    padding: 8px 0;
+    display: flex; gap: 5px; justify-content: center;
+    padding: 5px 0; flex-shrink: 0;
   }
   .w-dot {
-    width: 6px; height: 6px; border-radius: 50%;
-    background: #1E293B; border: none; cursor: pointer;
-    padding: 0;
+    width: 5px; height: 5px; border-radius: 50%;
+    background: #1E293B; border: none; cursor: pointer; padding: 0;
   }
   .w-dot.active { background: #4ADE80; }
 
-  /* Buttons grid */
+  .w-page { display: none; width: 100%; flex: 1; }
+  .w-page.active { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+
   .w-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 6px;
+    gap: 5px;
     width: 100%;
-    padding: 0 8px;
+    max-width: 200px;
+  }
+  .w-grid3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 5px;
+    width: 100%;
+    max-width: 200px;
   }
 
   .w-btn {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 3px;
-    padding: 14px 4px;
-    border-radius: 14px;
-    border: 1px solid;
-    cursor: pointer;
-    font-family: inherit;
-    transition: transform 0.1s;
-    background: none;
-    min-height: 62px;
-  }
-  .w-btn:active { transform: scale(0.92); }
-  .w-btn .w-icon { font-size: 22px; line-height: 1; }
-  .w-btn .w-label { font-size: 8px; font-weight: 600; letter-spacing: 0.5px; }
-
-  .w-btn-full {
-    grid-column: span 2;
-    padding: 12px;
-    min-height: 50px;
-  }
-
-  /* Nap active state */
-  .w-nap-active { animation: wpulse 1.5s infinite; }
-  @keyframes wpulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.7;transform:scale(0.98)} }
-
-  /* Toast */
-  .w-toast {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: #1E293B;
-    color: #F8FAFC;
-    padding: 12px 16px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 2px;
+    padding: 10px 4px;
     border-radius: 12px;
-    font-size: 11px;
-    z-index: 100;
-    text-align: center;
-    border: 1px solid #334155;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.6);
-    animation: wfadeIn 0.15s ease;
-    max-width: 80%;
+    border: 1px solid;
+    cursor: pointer; font-family: inherit;
+    background: none;
+    transition: transform 0.1s;
   }
-  @keyframes wfadeIn { from{opacity:0;transform:translate(-50%,-50%) scale(0.9)} to{opacity:1;transform:translate(-50%,-50%) scale(1)} }
+  .w-btn:active { transform: scale(0.9); }
+  .w-btn .wi { font-size: 18px; line-height: 1; }
+  .w-btn .wl { font-size: 7px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
 
-  /* Energy modal */
+  .w-btn-wide { grid-column: span 2; padding: 8px; }
+
+  .w-section {
+    font-size: 7px; color: #475569; letter-spacing: 1.5px;
+    text-transform: uppercase; text-align: center;
+    padding: 3px 0; flex-shrink: 0;
+  }
+
+  .w-nap { animation: wp 1.5s infinite; }
+  @keyframes wp { 0%,100%{opacity:1} 50%{opacity:0.6} }
+
+  .w-toast {
+    position: fixed; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background: #1E293B; color: #F8FAFC;
+    padding: 10px 14px; border-radius: 12px;
+    font-size: 11px; z-index: 100; text-align: center;
+    border: 1px solid #334155;
+    animation: wfi 0.15s ease;
+  }
+  @keyframes wfi { from{opacity:0;transform:translate(-50%,-50%) scale(0.9)} to{opacity:1;transform:translate(-50%,-50%) scale(1)} }
+
   .w-energy-overlay {
     position: fixed; inset: 0;
-    background: rgba(0,0,0,0.9);
+    background: rgba(0,0,0,0.92);
     display: flex; align-items: center; justify-content: center;
     z-index: 99;
   }
+  .w-energy-wrap { padding: 8px; }
+  .w-energy-title { text-align: center; font-size: 9px; color: #94A3B8; margin-bottom: 6px; font-weight: 600; }
   .w-energy-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 4px;
-    padding: 8px;
-    width: 90%;
-    max-width: 220px;
+    display: grid; grid-template-columns: repeat(5, 1fr);
+    gap: 4px; width: 180px;
   }
-  .w-energy-btn {
-    padding: 10px 2px;
-    border: 1px solid #1E293B;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 700;
-    text-align: center;
-    cursor: pointer;
-    font-family: inherit;
-    background: none;
+  .w-ebtn {
+    padding: 8px 2px; border: 1px solid #1E293B; border-radius: 7px;
+    font-size: 13px; font-weight: 700; text-align: center;
+    cursor: pointer; font-family: inherit; background: none;
   }
-  .w-energy-btn:active { transform: scale(0.9); }
-  .w-energy-title {
-    text-align: center;
-    font-size: 10px;
-    color: #94A3B8;
-    margin-bottom: 6px;
-    font-weight: 600;
-  }
-  .w-energy-cancel {
-    text-align: center;
-    margin-top: 8px;
-    font-size: 9px;
-    color: #475569;
-    cursor: pointer;
-    background: none; border: none;
-    font-family: inherit;
-    padding: 6px 16px;
-  }
-
-  /* Section label */
-  .w-section {
-    font-size: 8px;
-    color: #475569;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    text-align: center;
-    padding: 6px 0 4px;
-    width: 100%;
+  .w-ebtn:active { transform: scale(0.9); }
+  .w-ecancel {
+    text-align: center; margin-top: 6px; font-size: 8px;
+    color: #475569; cursor: pointer; background: none;
+    border: none; font-family: inherit; padding: 6px;
   }
 </style>
 </head>
 <body>
-<div class="watch-container" id="app"></div>
-
+<div class="watch" id="app"></div>
 <script>
-var DB_KEY = 'nt1_events_v3';
-var events = JSON.parse(localStorage.getItem(DB_KEY) || '[]');
-var napActive = false;
-var currentPage = 0;
-var toast = null;
-var toastTimer = null;
-var showEnergy = false;
-
-// Check nap
-var lns = events.find(function(e){return e.type==='NAP_START'});
-var lne = events.find(function(e){return e.type==='NAP_END'});
-if (lns && (!lne || new Date(lns.ts) > new Date(lne.ts))) napActive = true;
-
-function save() { localStorage.setItem(DB_KEY, JSON.stringify(events)); }
-function today() { return new Date().toISOString().split('T')[0]; }
-function uid() { return Date.now().toString(36) + Math.random().toString(36).substr(2,5); }
-
-function log(type, extra) {
-  extra = extra || {};
-  var ev = { id: uid(), type: type, ts: new Date().toISOString(), date: today() };
-  for (var k in extra) ev[k] = extra[k];
-  events.unshift(ev);
-  if (type === 'NAP_START') napActive = true;
-  if (type === 'NAP_END') napActive = false;
-  save();
-
-  // Labels
-  var labels = {
-    ZYDILO: '\u{1F48A} Zydilo', COFFEE: '\u2615 Caf\u00e9', NAP_START: '\u{1F634} Siesta',
-    NAP_END: '\u23F0 Fin siesta', SDE: '\u{1F534} SDE', CATAPLEXY: '\u26A0\uFE0F Cataplej\u00eda',
-    ENERGY: '\u{1F4CA} Energ\u00eda '+(extra.energy||''), GI: '\u{1F525} GI',
-    GRIPPER: '\u270A Activaci\u00f3n', MEAL_LC: '\u{1F95A} Comida LC',
-    ROMERO: '\u{1F33F} Romero', CREATINE: '\u26A1 Creatina',
-    MEAL_CARB: '\u{1F35E} Carbos', WAKE_NIGHT: '\u{1F319} Despertar',
-    DREAM: '\u{1F4AD} Sue\u00f1o'
-  };
-  showToast(labels[type] || type);
-  render();
+var DB='nt1_events_v3',events=JSON.parse(localStorage.getItem(DB)||'[]'),nap=false,pg=0,toast=null,tt=null,emod=false;
+var ls=events.find(function(e){return e.type==='NAP_START'}),le=events.find(function(e){return e.type==='NAP_END'});
+if(ls&&(!le||new Date(ls.ts)>new Date(le.ts)))nap=true;
+function sv(){localStorage.setItem(DB,JSON.stringify(events))}
+function td(){return new Date().toISOString().split('T')[0]}
+function id(){return Date.now().toString(36)+Math.random().toString(36).substr(2,5)}
+function lg(t,x){
+  x=x||{};var e={id:id(),type:t,ts:new Date().toISOString(),date:td()};
+  for(var k in x)e[k]=x[k];events.unshift(e);
+  if(t==='NAP_START')nap=true;if(t==='NAP_END')nap=false;sv();
+  var L={ZYDILO:'\u{1F48A}Zydilo',COFFEE:'\u2615Caf\u00e9',NAP_START:'\u{1F634}Siesta',NAP_END:'\u23F0Fin',SDE:'\u{1F534}SDE',CATAPLEXY:'\u26A0Cataplej\u00eda',ENERGY:'\u{1F4CA}E:'+(x.energy||''),GI:'\u{1F525}GI',GRIPPER:'\u270AActiv',MEAL_LC:'\u{1F95A}LC',ROMERO:'\u{1F33F}Romero',CREATINE:'\u26A1Cr',MEAL_CARB:'\u{1F35E}Carb',WAKE_NIGHT:'\u{1F319}Desp',DREAM:'\u{1F4AD}Sue\u00f1o'};
+  st(L[t]||t);rn();
 }
-
-function showToast(msg) {
-  toast = msg;
-  render();
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(function(){ toast = null; render(); }, 1800);
-}
-
-function setPage(p) { currentPage = p; render(); }
-
-function render() {
-  var todayStr = today();
-  var zydiloToday = events.filter(function(e){return e.date===todayStr && e.type==='ZYDILO'}).length;
-  var coffeeToday = events.filter(function(e){return e.date===todayStr && e.type==='COFFEE'}).length;
-  var now = new Date();
-
-  var h = '';
-
+function st(m){toast=m;rn();clearTimeout(tt);tt=setTimeout(function(){toast=null;rn()},1500)}
+function sp(p){pg=p;rn()}
+function rn(){
+  var dy=td(),zc=events.filter(function(e){return e.date===dy&&e.type==='ZYDILO'}).length,
+  cc=events.filter(function(e){return e.date===dy&&e.type==='COFFEE'}).length;
+  var c=function(cl,o){return'border-color:'+cl+'33;color:'+cl+';background:'+cl+o+';'};
+  var h='';
   // Header
-  h += '<div class="w-header">';
-  h += '<div class="w-title">\u25CE NT1</div>';
-  h += '<div class="w-time">'+now.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit',hour12:false})+'</div>';
-  h += '<div class="w-stats">';
-  h += '<span class="w-stat">\u{1F48A} <b style="color:#4ADE80">'+(zydiloToday*50)+'</b>mg</span>';
-  h += '<span class="w-stat">\u2615 <b style="color:#F59E0B">'+coffeeToday+'</b></span>';
-  if (napActive) h += '<span class="w-stat" style="color:#818CF8">\u{1F634} ACTIVA</span>';
-  h += '</div></div>';
+  h+='<div class="w-header"><div class="w-title">\u25CE NT1</div>';
+  h+='<div class="w-stats"><span class="w-stat">\u{1F48A}<b style="color:#4ADE80">'+(zc*50)+'</b>mg</span>';
+  h+='<span class="w-stat">\u2615<b style="color:#F59E0B">'+cc+'</b></span>';
+  if(nap)h+='<span class="w-stat" style="color:#818CF8">\u{1F634}ON</span>';
+  h+='</div></div>';
+  // Dots
+  h+='<div class="w-dots">';for(var i=0;i<3;i++)h+='<button class="w-dot '+(pg===i?'active':'')+'" onclick="sp('+i+')"></button>';h+='</div>';
 
-  // Page dots
-  h += '<div class="w-dots">';
-  for (var i=0; i<3; i++) {
-    h += '<button class="w-dot '+(currentPage===i?'active':'')+'" onclick="setPage('+i+')"></button>';
+  // P0: Primary
+  h+='<div class="w-page '+(pg===0?'active':'')+'">';
+  h+='<div class="w-section">Principal</div>';
+  h+='<div class="w-grid">';
+  h+='<button class="w-btn" style="'+c('#4ADE80','11')+'" onclick="lg(\'ZYDILO\')"><span class="wi">\u{1F48A}</span><span class="wl">Zydilo</span></button>';
+  h+='<button class="w-btn" style="'+c('#F59E0B','11')+'" onclick="lg(\'COFFEE\')"><span class="wi">\u2615</span><span class="wl">Caf\u00e9</span></button>';
+  if(nap){
+    h+='<button class="w-btn w-btn-wide w-nap" style="'+c('#F59E0B','15')+'" onclick="lg(\'NAP_END\')"><span class="wi">\u23F0</span><span class="wl">Fin Siesta</span></button>';
+  }else{
+    h+='<button class="w-btn w-btn-wide" style="'+c('#818CF8','11')+'" onclick="lg(\'NAP_START\')"><span class="wi">\u{1F634}</span><span class="wl">Siesta</span></button>';
   }
-  h += '</div>';
+  h+='<button class="w-btn" style="'+c('#E2E8F0','0B')+'" onclick="emod=true;rn()"><span class="wi">\u{1F4CA}</span><span class="wl">Energ\u00eda</span></button>';
+  h+='<button class="w-btn" style="'+c('#EF4444','11')+'" onclick="lg(\'SDE\')"><span class="wi">\u{1F534}</span><span class="wl">SDE</span></button>';
+  h+='</div></div>';
 
-  // === PAGE 0: Primary actions ===
-  h += '<div class="w-page '+(currentPage===0?'active':'')+'">';
-  h += '<div class="w-section">Farmacolog\u00eda</div>';
-  h += '<div class="w-grid">';
-  h += '<button class="w-btn" style="border-color:#4ADE8033;color:#4ADE80" onclick="log(\'ZYDILO\')"><span class="w-icon">\u{1F48A}</span><span class="w-label">ZYDILO</span></button>';
-  h += '<button class="w-btn" style="border-color:#F59E0B33;color:#F59E0B" onclick="log(\'COFFEE\')"><span class="w-icon">\u2615</span><span class="w-label">CAF\u00c9</span></button>';
+  // P1: Clinical
+  h+='<div class="w-page '+(pg===1?'active':'')+'">';
+  h+='<div class="w-section">Cl\u00ednico</div>';
+  h+='<div class="w-grid3">';
+  h+='<button class="w-btn" style="'+c('#F87171','0B')+'" onclick="lg(\'CATAPLEXY\',{trigger:\'R\u00e1pido\'})"><span class="wi">\u26A0\uFE0F</span><span class="wl">Catap.</span></button>';
+  h+='<button class="w-btn" style="'+c('#FB7185','0B')+'" onclick="lg(\'GI\')"><span class="wi">\u{1F525}</span><span class="wl">GI</span></button>';
+  h+='<button class="w-btn" style="'+c('#06B6D4','0B')+'" onclick="lg(\'GRIPPER\')"><span class="wi">\u270A</span><span class="wl">Activ.</span></button>';
+  h+='<button class="w-btn" style="'+c('#A78BFA','0B')+'" onclick="lg(\'WAKE_NIGHT\')"><span class="wi">\u{1F319}</span><span class="wl">Desp.</span></button>';
+  h+='<button class="w-btn" style="'+c('#C084FC','0B')+'" onclick="lg(\'DREAM\')"><span class="wi">\u{1F4AD}</span><span class="wl">Sue\u00f1o</span></button>';
+  h+='<button class="w-btn" style="'+c('#34D399','0B')+'" onclick="lg(\'ROMERO\')"><span class="wi">\u{1F33F}</span><span class="wl">Romero</span></button>';
+  h+='</div></div>';
 
-  // Nap button
-  if (napActive) {
-    h += '<button class="w-btn w-btn-full w-nap-active" style="border-color:#F59E0B44;color:#F59E0B;background:#F59E0B11" onclick="log(\'NAP_END\')"><span class="w-icon">\u23F0</span><span class="w-label">TERMINAR SIESTA</span></button>';
-  } else {
-    h += '<button class="w-btn w-btn-full" style="border-color:#818CF833;color:#818CF8" onclick="log(\'NAP_START\')"><span class="w-icon">\u{1F634}</span><span class="w-label">INICIAR SIESTA</span></button>';
+  // P2: Nutrition
+  h+='<div class="w-page '+(pg===2?'active':'')+'">';
+  h+='<div class="w-section">Nutrici\u00f3n</div>';
+  h+='<div class="w-grid">';
+  h+='<button class="w-btn" style="'+c('#60A5FA','0B')+'" onclick="lg(\'MEAL_LC\')"><span class="wi">\u{1F95A}</span><span class="wl">Low-Carb</span></button>';
+  h+='<button class="w-btn" style="'+c('#FB923C','0B')+'" onclick="lg(\'MEAL_CARB\')"><span class="wi">\u{1F35E}</span><span class="wl">Carbos</span></button>';
+  h+='<button class="w-btn" style="'+c('#A78BFA','0B')+'" onclick="lg(\'CREATINE\')"><span class="wi">\u26A1</span><span class="wl">Creatina</span></button>';
+  h+='<button class="w-btn" style="'+c('#34D399','0B')+'" onclick="lg(\'ROMERO\')"><span class="wi">\u{1F33F}</span><span class="wl">Romero</span></button>';
+  h+='</div></div>';
+
+  // Energy
+  if(emod){
+    h+='<div class="w-energy-overlay" onclick="emod=false;rn()"><div class="w-energy-wrap" onclick="event.stopPropagation()">';
+    h+='<div class="w-energy-title">Energ\u00eda</div><div class="w-energy-grid">';
+    for(var j=1;j<=10;j++){var ec=j<=3?'#EF4444':j<=6?'#F59E0B':'#4ADE80',eb=j<=3?'#EF444422':j<=6?'#F59E0B22':'#4ADE8022';
+    h+='<button class="w-ebtn" style="background:'+eb+';color:'+ec+'" onclick="emod=false;lg(\'ENERGY\',{energy:'+j+'})">'+j+'</button>';}
+    h+='</div><button class="w-ecancel" onclick="emod=false;rn()">Cancelar</button></div></div>';
   }
-
-  h += '<button class="w-btn" style="border-color:#E2E8F033;color:#E2E8F0" onclick="showEnergy=true;render()"><span class="w-icon">\u{1F4CA}</span><span class="w-label">ENERG\u00cdA</span></button>';
-  h += '<button class="w-btn" style="border-color:#EF444433;color:#EF4444" onclick="log(\'SDE\')"><span class="w-icon">\u{1F534}</span><span class="w-label">SDE</span></button>';
-  h += '</div></div>';
-
-  // === PAGE 1: Clinical + Body ===
-  h += '<div class="w-page '+(currentPage===1?'active':'')+'">';
-  h += '<div class="w-section">Cl\u00ednico y Cuerpo</div>';
-  h += '<div class="w-grid">';
-  h += '<button class="w-btn" style="border-color:#F8717133;color:#F87171" onclick="log(\'CATAPLEXY\',{trigger:\'R\u00e1pido\'})"><span class="w-icon">\u26A0\uFE0F</span><span class="w-label">CATAPLEJ\u00cdA</span></button>';
-  h += '<button class="w-btn" style="border-color:#FB718533;color:#FB7185" onclick="log(\'GI\')"><span class="w-icon">\u{1F525}</span><span class="w-label">MALESTAR GI</span></button>';
-  h += '<button class="w-btn" style="border-color:#06B6D433;color:#06B6D4" onclick="log(\'GRIPPER\')"><span class="w-icon">\u270A</span><span class="w-label">ACTIVACI\u00d3N</span></button>';
-  h += '<button class="w-btn" style="border-color:#A78BFA33;color:#A78BFA" onclick="log(\'WAKE_NIGHT\')"><span class="w-icon">\u{1F319}</span><span class="w-label">DESPERTAR</span></button>';
-  h += '<button class="w-btn" style="border-color:#C084FC33;color:#C084FC" onclick="log(\'DREAM\')"><span class="w-icon">\u{1F4AD}</span><span class="w-label">SUE\u00d1O</span></button>';
-  h += '<button class="w-btn" style="border-color:#34D39933;color:#34D399" onclick="log(\'ROMERO\')"><span class="w-icon">\u{1F33F}</span><span class="w-label">ROMERO</span></button>';
-  h += '</div></div>';
-
-  // === PAGE 2: Nutrition ===
-  h += '<div class="w-page '+(currentPage===2?'active':'')+'">';
-  h += '<div class="w-section">Nutrici\u00f3n</div>';
-  h += '<div class="w-grid">';
-  h += '<button class="w-btn" style="border-color:#60A5FA33;color:#60A5FA" onclick="log(\'MEAL_LC\')"><span class="w-icon">\u{1F95A}</span><span class="w-label">LOW-CARB</span></button>';
-  h += '<button class="w-btn" style="border-color:#FB923C33;color:#FB923C" onclick="log(\'MEAL_CARB\')"><span class="w-icon">\u{1F35E}</span><span class="w-label">CARBOS</span></button>';
-  h += '<button class="w-btn" style="border-color:#A78BFA33;color:#A78BFA" onclick="log(\'CREATINE\')"><span class="w-icon">\u26A1</span><span class="w-label">CREATINA</span></button>';
-  h += '<button class="w-btn" style="border-color:#34D39933;color:#34D399" onclick="log(\'ROMERO\')"><span class="w-icon">\u{1F33F}</span><span class="w-label">ROMERO</span></button>';
-  h += '</div></div>';
-
-  // Energy overlay
-  if (showEnergy) {
-    h += '<div class="w-energy-overlay" onclick="showEnergy=false;render()">';
-    h += '<div onclick="event.stopPropagation()">';
-    h += '<div class="w-energy-title">Energ\u00eda ahora</div>';
-    h += '<div class="w-energy-grid">';
-    for (var j=1;j<=10;j++) {
-      var c = j<=3?'#EF4444':j<=6?'#F59E0B':'#4ADE80';
-      var bg = j<=3?'#EF444422':j<=6?'#F59E0B22':'#4ADE8022';
-      h += '<button class="w-energy-btn" style="background:'+bg+';color:'+c+'" onclick="showEnergy=false;log(\'ENERGY\',{energy:'+j+'})">'+j+'</button>';
-    }
-    h += '</div>';
-    h += '<button class="w-energy-cancel" onclick="showEnergy=false;render()">Cancelar</button>';
-    h += '</div></div>';
-  }
-
-  // Toast
-  if (toast) h += '<div class="w-toast">'+toast+'</div>';
-
-  document.getElementById('app').innerHTML = h;
+  if(toast)h+='<div class="w-toast">'+toast+'</div>';
+  document.getElementById('app').innerHTML=h;
 }
-
-// Swipe detection for page navigation
-var touchStartX = 0;
-document.addEventListener('touchstart', function(e) { touchStartX = e.touches[0].clientX; });
-document.addEventListener('touchend', function(e) {
-  var diff = touchStartX - e.changedTouches[0].clientX;
-  if (Math.abs(diff) > 40) {
-    if (diff > 0 && currentPage < 2) { currentPage++; render(); }
-    else if (diff < 0 && currentPage > 0) { currentPage--; render(); }
-  }
-});
-
-// Update clock
-setInterval(render, 60000);
-render();
+var tx=0;
+document.addEventListener('touchstart',function(e){tx=e.touches[0].clientX});
+document.addEventListener('touchend',function(e){var d=tx-e.changedTouches[0].clientX;if(Math.abs(d)>30){if(d>0&&pg<2){pg++;rn()}else if(d<0&&pg>0){pg--;rn()}}});
+setInterval(rn,60000);rn();
 </script>
 </body>
 </html>
