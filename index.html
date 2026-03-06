@@ -221,6 +221,9 @@ const TYPES = {
   CATAPLEXY:   { label:'Cataplejía',        icon:'⚠️', color:'#F87171', cat:'clinical' },
   SDE:         { label:'Ataque SDE',        icon:'🔴', color:'#EF4444', cat:'clinical' },
   GRIPPER:     { label:'Micro-activación',  icon:'✊', color:'#06B6D4', cat:'activation' },
+  GI:          { label:'Malestar GI',       icon:'🔥', color:'#FB7185', cat:'clinical' },
+  WAKE_NIGHT:  { label:'Despertar Nocturno',icon:'🌙', color:'#A78BFA', cat:'sleep' },
+  DREAM:       { label:'Sueño Vívido',      icon:'💭', color:'#C084FC', cat:'sleep' },
   ENERGY:      { label:'Energía',           icon:'📊', color:'#E2E8F0', cat:'metric' },
 };
 
@@ -416,7 +419,7 @@ function render() {
       </div>
     </div>`;
 
-    // Activation
+    // Activation & Supplements
     html += `<div class="section">
       <div class="section-title">Activación y Suplementos</div>
       <div class="grid2">
@@ -425,6 +428,22 @@ function render() {
         </button>
         <button class="btn-sm btn-colored" style="${colorStyle('#34D399','11')}" onclick="logEvent('ROMERO')">
           🌿 Romero 300ml
+        </button>
+      </div>
+    </div>`;
+
+    // Body & Sleep Signals
+    html += `<div class="section">
+      <div class="section-title">Señales del Cuerpo</div>
+      <div class="grid3">
+        <button class="btn-sm btn-colored" style="${colorStyle('#FB7185','11')}" onclick="logEvent('GI')">
+          🔥 Malestar GI
+        </button>
+        <button class="btn-sm btn-colored" style="${colorStyle('#A78BFA','11')}" onclick="logEvent('WAKE_NIGHT')">
+          🌙 Despertar
+        </button>
+        <button class="btn-sm btn-colored" style="${colorStyle('#C084FC','11')}" onclick="logEvent('DREAM')">
+          💭 Sueño Vívido
         </button>
       </div>
     </div>`;
@@ -493,6 +512,9 @@ function render() {
     const nCat = state.events.filter(e => e.type === 'CATAPLEXY').length;
     const nNap = state.events.filter(e => e.type === 'NAP_START').length;
     const nZyd = state.events.filter(e => e.type === 'ZYDILO').length;
+    const nGI = state.events.filter(e => e.type === 'GI').length;
+    const nWake = state.events.filter(e => e.type === 'WAKE_NIGHT').length;
+    const nDream = state.events.filter(e => e.type === 'DREAM').length;
 
     html += `<div class="section">
       <div class="section-title">Expediente Clínico NT1</div>
@@ -504,7 +526,10 @@ function render() {
           Dosis Zydilo: <span class="export-val" style="color:var(--green)">${nZyd}</span><br>
           Episodios cataplejía: <span class="export-val" style="color:var(--redLight)">${nCat}</span><br>
           Ataques SDE: <span class="export-val" style="color:var(--red)">${nSde}</span><br>
-          Siestas registradas: <span class="export-val" style="color:var(--indigo)">${nNap}</span>
+          Siestas registradas: <span class="export-val" style="color:var(--indigo)">${nNap}</span><br>
+          Malestares GI: <span class="export-val" style="color:#FB7185">${nGI}</span><br>
+          Despertares nocturnos: <span class="export-val" style="color:#A78BFA">${nWake}</span><br>
+          Sueños vívidos: <span class="export-val" style="color:#C084FC">${nDream}</span>
         </div>
       </div>
       <button class="btn-export" onclick="exportCSV()">📥 Exportar CSV (para Neurólogo)</button>
