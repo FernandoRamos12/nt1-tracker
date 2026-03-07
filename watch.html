@@ -9,132 +9,289 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>NT1 Watch</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  :root {
+    --bg: #0A0F1C;
+    --fg: #E2E8F0;
+    --muted: #94A3B8;
+    --muted-2: #475569;
+    --panel: #1E293B;
+    --ring-pad: 18px;
+    --title-size: 18px;
+    --stat-size: 12px;
+    --section-size: 10px;
+    --icon-size: 28px;
+    --label-size: 9px;
+    --grid-gap: 6px;
+    --btn-min: 60px;
+    --btn-wide-min: 52px;
+    --dot-size: 6px;
+    --radius: 14px;
+    --overlay-width: 220px;
+  }
+
+  @media (min-width: 460px) and (min-height: 460px) {
+    :root {
+      --ring-pad: 22px;
+      --title-size: 20px;
+      --stat-size: 13px;
+      --icon-size: 31px;
+      --label-size: 9.5px;
+      --grid-gap: 8px;
+      --btn-min: 68px;
+      --btn-wide-min: 58px;
+      --dot-size: 7px;
+      --overlay-width: 250px;
+    }
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+
   html, body {
-    background: #0A0F1C;
-    color: #E2E8F0;
+    width: 100%;
+    height: 100%;
+    background: var(--bg);
+    color: var(--fg);
     font-family: 'Courier New', monospace;
-    width: 100%; height: 100vh;
     overflow: hidden;
     user-select: none;
     -webkit-user-select: none;
   }
 
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   .watch {
-    width: 100%;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    padding: 6px;
+    width: min(100vw, 100dvh);
+    height: min(100vw, 100dvh);
+    padding:
+      max(var(--ring-pad), env(safe-area-inset-top))
+      max(var(--ring-pad), env(safe-area-inset-right))
+      max(var(--ring-pad), env(safe-area-inset-bottom))
+      max(var(--ring-pad), env(safe-area-inset-left));
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: space-between;
     position: relative;
-    max-width: 750px;
-    margin: 0 auto;
     overflow: hidden;
+    margin: 0 auto;
   }
 
   .w-header {
     text-align: center;
     flex-shrink: 0;
-    margin-bottom: -4px;
-  }
-  .w-title { font-size: 24px; color: #4ADE80; font-weight: 700; letter-spacing: 1.5px; }
-  .w-stats {
-    display: flex; justify-content: center; gap: 8px;
-    margin-top: 4px; font-size: 18px;
-  }
-  .w-stat { color: #94A3B8; }
-  .w-stat b { font-weight: 700; }
-
-  .w-dots {
-    display: flex; gap: 8px; justify-content: center;
-    padding: 2px 0 0 0; flex-shrink: 0;
-  }
-  .w-dot {
-    width: 10px; height: 10px; border-radius: 50%;
-    background: #1E293B; border: none; cursor: pointer; padding: 0;
-  }
-  .w-dot.active { background: #4ADE80; }
-
-  .w-page { display: none; width: 100%; flex: 1; }
-  .w-page.active { display: flex; flex-direction: column; align-items: center; justify-content: center; }
-
-  .w-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    width: 100%;
-    max-width: 100%;
-  }
-  .w-grid3 {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 10px;
-    width: 100%;
-    max-width: 100%;
-  }
-
-  .w-btn {
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    gap: 4px;
-    padding: 12px 14px;
-    border-radius: 10px;
-    border: 1px solid;
-    cursor: pointer; font-family: inherit;
-    background: none;
-    transition: transform 0.1s;
-    min-height: 77px;
-  }
-  .w-btn:active { transform: scale(0.95); }
-  .w-btn .wi { font-size: 36px; line-height: 1; }
-  .w-btn .wl { font-size: 10px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
-
-  .w-btn-wide { grid-column: span 2; padding: 10px; min-height: 66px; }
-
-  .w-section {
-    font-size: 12px; color: #475569; letter-spacing: 1px;
-    text-transform: uppercase; text-align: center;
-    padding: 1px 0; flex-shrink: 0;
-    font-weight: 600;
     margin-bottom: 4px;
   }
+
+  .w-title {
+    font-size: var(--title-size);
+    color: #4ADE80;
+    font-weight: 700;
+    letter-spacing: 1px;
+    line-height: 1;
+  }
+
+  .w-stats {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 4px;
+    font-size: var(--stat-size);
+    flex-wrap: wrap;
+  }
+
+  .w-stat {
+    color: var(--muted);
+    line-height: 1;
+  }
+
+  .w-stat b { font-weight: 700; }
+
+  .w-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 0;
+  }
+
+  .w-page {
+    display: none;
+    width: 100%;
+  }
+
+  .w-page.active {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .w-section {
+    font-size: var(--section-size);
+    color: var(--muted-2);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-align: center;
+    font-weight: 700;
+  }
+
+  .w-grid,
+  .w-grid3 {
+    display: grid;
+    width: 100%;
+    gap: var(--grid-gap);
+  }
+
+  .w-grid { grid-template-columns: 1fr 1fr; }
+  .w-grid3 { grid-template-columns: 1fr 1fr 1fr; }
+
+  .w-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 8px 8px;
+    border-radius: var(--radius);
+    border: 1px solid;
+    cursor: pointer;
+    font-family: inherit;
+    background: none;
+    transition: transform 0.1s;
+    min-height: var(--btn-min);
+  }
+
+  .w-btn:active { transform: scale(0.95); }
+
+  .w-btn .wi {
+    font-size: var(--icon-size);
+    line-height: 1;
+  }
+
+  .w-btn .wl {
+    font-size: var(--label-size);
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    line-height: 1;
+    text-align: center;
+  }
+
+  .w-btn-wide {
+    grid-column: span 2;
+    min-height: var(--btn-wide-min);
+    padding-block: 8px;
+  }
+
+  .w-dots {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+    margin-top: 4px;
+  }
+
+  .w-dot {
+    width: var(--dot-size);
+    height: var(--dot-size);
+    border-radius: 50%;
+    background: #1E293B;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .w-dot.active { background: #4ADE80; }
 
   .w-nap { animation: wp 1.5s infinite; }
   @keyframes wp { 0%,100%{opacity:1} 50%{opacity:0.6} }
 
   .w-toast {
-    position: fixed; top: 50%; left: 50%;
+    position: fixed;
+    top: 50%;
+    left: 50%;
     transform: translate(-50%, -50%);
-    background: #1E293B; color: #F8FAFC;
-    padding: 16px 20px; border-radius: 10px;
-    font-size: 14px; z-index: 100; text-align: center;
+    background: #1E293B;
+    color: #F8FAFC;
+    padding: 12px 14px;
+    border-radius: 12px;
+    font-size: 12px;
+    z-index: 100;
+    text-align: center;
     border: 1px solid #334155;
     animation: wfi 0.15s ease;
+    min-width: 120px;
   }
-  @keyframes wfi { from{opacity:0;transform:translate(-50%,-50%) scale(0.9)} to{opacity:1;transform:translate(-50%,-50%) scale(1)} }
+
+  @keyframes wfi {
+    from { opacity: 0; transform: translate(-50%, -50%) scale(0.92); }
+    to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  }
 
   .w-energy-overlay {
-    position: fixed; inset: 0;
+    position: fixed;
+    inset: 0;
     background: rgba(0,0,0,0.92);
-    display: flex; align-items: center; justify-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     z-index: 99;
   }
+
   .w-energy-wrap { padding: 12px; }
-  .w-energy-title { text-align: center; font-size: 16px; color: #94A3B8; margin-bottom: 10px; font-weight: 600; }
+
+  .w-energy-title {
+    text-align: center;
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 10px;
+    font-weight: 700;
+  }
+
   .w-energy-grid {
-    display: grid; grid-template-columns: repeat(5, 1fr);
-    gap: 6px; width: 220px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+    width: min(76vw, var(--overlay-width));
   }
+
   .w-ebtn {
-    padding: 10px 4px; border: 1px solid #1E293B; border-radius: 6px;
-    font-size: 18px; font-weight: 700; text-align: center;
-    cursor: pointer; font-family: inherit; background: none;
-    min-height: 55px;
+    padding: 8px 4px;
+    border: 1px solid #1E293B;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 700;
+    text-align: center;
+    cursor: pointer;
+    font-family: inherit;
+    background: none;
+    min-height: 48px;
   }
+
   .w-ebtn:active { transform: scale(0.95); }
+
   .w-ecancel {
-    text-align: center; margin-top: 10px; font-size: 12px;
-    color: #475569; cursor: pointer; background: none;
-    border: none; font-family: inherit; padding: 6px;
+    text-align: center;
+    margin-top: 10px;
+    font-size: 11px;
+    color: var(--muted-2);
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-family: inherit;
+    padding: 6px;
   }
 </style>
 </head>
@@ -151,7 +308,7 @@ function lg(t,x){
   x=x||{};var e={id:id(),type:t,ts:new Date().toISOString(),date:td()};
   for(var k in x)e[k]=x[k];events.unshift(e);
   if(t==='NAP_START')nap=true;if(t==='NAP_END')nap=false;sv();
-  var L={ZYDILO:'\u{1F48A}Zydilo',COFFEE:'\u2615Caf\u00e9',NAP_START:'\u{1F634}Siesta',NAP_END:'\u23F0Fin',SDE:'\u{1F534}SDE',CATAPLEXY:'\u26A0Cataplej\u00eda',ENERGY:'\u{1F4CA}E:'+(x.energy||''),GI:'\u{1F525}GI',GRIPPER:'\u270AActiv',MEAL_LC:'\u{1F95A}LC',ROMERO:'\u{1F33F}Romero',CREATINE:'\u26A1Cr',MEAL_CARB:'\u{1F35E}Carb',WAKE_NIGHT:'\u{1F319}Desp',DREAM:'\u{1F4AD}Sue\u00f1o'};
+  var L={ZYDILO:'💊Zydilo',COFFEE:'☕Café',NAP_START:'😴Siesta',NAP_END:'⏰Fin',SDE:'🔴SDE',CATAPLEXY:'⚠Cataplejía',ENERGY:'📊E:'+(x.energy||''),GI:'🔥GI',GRIPPER:'✊Activ',MEAL_LC:'🥚LC',ROMERO:'🌿Romero',CREATINE:'⚡Cr',MEAL_CARB:'🍞Carb',WAKE_NIGHT:'🌙Desp',DREAM:'💭Sueño'};
   st(L[t]||t);rn();
 }
 function st(m){toast=m;rn();clearTimeout(tt);tt=setTimeout(function(){toast=null;rn()},1500)}
@@ -161,59 +318,59 @@ function rn(){
   cc=events.filter(function(e){return e.date===dy&&e.type==='COFFEE'}).length;
   var c=function(cl,o){return'border-color:'+cl+'33;color:'+cl+';background:'+cl+o+';'};
   var h='';
-  // Header
-  h+='<div class="w-header"><div class="w-title">\u25CE NT1</div>';
-  h+='<div class="w-stats"><span class="w-stat">\u{1F48A}<b style="color:#4ADE80">'+(zc*50)+'</b>mg</span>';
-  h+='<span class="w-stat">\u2615<b style="color:#F59E0B">'+cc+'</b></span>';
-  if(nap)h+='<span class="w-stat" style="color:#818CF8">\u{1F634}ON</span>';
+  h+='<div class="w-header"><div class="w-title">◉ NT1</div>';
+  h+='<div class="w-stats"><span class="w-stat">💊<b style="color:#4ADE80">'+(zc*50)+'</b>mg</span>';
+  h+='<span class="w-stat">☕<b style="color:#F59E0B">'+cc+'</b></span>';
+  if(nap)h+='<span class="w-stat" style="color:#818CF8">😴ON</span>';
   h+='</div></div>';
 
-  // P0: Primary
+  h+='<div class="w-content">';
+
   h+='<div class="w-page '+(pg===0?'active':'')+'">';
   h+='<div class="w-section">Principal</div>';
   h+='<div class="w-grid">';
-  h+='<button class="w-btn" style="'+c('#4ADE80','11')+'" onclick="lg(\'ZYDILO\')"><span class="wi">\u{1F48A}</span><span class="wl">Zydilo</span></button>';
-  h+='<button class="w-btn" style="'+c('#F59E0B','11')+'" onclick="lg(\'COFFEE\')"><span class="wi">\u2615</span><span class="wl">Caf\u00e9</span></button>';
+  h+='<button class="w-btn" style="'+c('#4ADE80','11')+'" onclick="lg(\'ZYDILO\')"><span class="wi">💊</span><span class="wl">Zydilo</span></button>';
+  h+='<button class="w-btn" style="'+c('#F59E0B','11')+'" onclick="lg(\'COFFEE\')"><span class="wi">☕</span><span class="wl">Café</span></button>';
   if(nap){
-    h+='<button class="w-btn w-btn-wide w-nap" style="'+c('#F59E0B','15')+'" onclick="lg(\'NAP_END\')"><span class="wi">\u23F0</span><span class="wl">Fin Siesta</span></button>';
+    h+='<button class="w-btn w-btn-wide w-nap" style="'+c('#F59E0B','15')+'" onclick="lg(\'NAP_END\')"><span class="wi">⏰</span><span class="wl">Fin Siesta</span></button>';
   }else{
-    h+='<button class="w-btn w-btn-wide" style="'+c('#818CF8','11')+'" onclick="lg(\'NAP_START\')"><span class="wi">\u{1F634}</span><span class="wl">Siesta</span></button>';
+    h+='<button class="w-btn w-btn-wide" style="'+c('#818CF8','11')+'" onclick="lg(\'NAP_START\')"><span class="wi">😴</span><span class="wl">Siesta</span></button>';
   }
-  h+='<button class="w-btn" style="'+c('#E2E8F0','0B')+'" onclick="emod=true;rn()"><span class="wi">\u{1F4CA}</span><span class="wl">Energ\u00eda</span></button>';
-  h+='<button class="w-btn" style="'+c('#EF4444','11')+'" onclick="lg(\'SDE\')"><span class="wi">\u{1F534}</span><span class="wl">SDE</span></button>';
+  h+='<button class="w-btn" style="'+c('#E2E8F0','0B')+'" onclick="emod=true;rn()"><span class="wi">📊</span><span class="wl">Energía</span></button>';
+  h+='<button class="w-btn" style="'+c('#EF4444','11')+'" onclick="lg(\'SDE\')"><span class="wi">🔴</span><span class="wl">SDE</span></button>';
   h+='</div></div>';
 
-  // P1: Clinical
   h+='<div class="w-page '+(pg===1?'active':'')+'">';
-  h+='<div class="w-section">Cl\u00ednico</div>';
+  h+='<div class="w-section">Clínico</div>';
   h+='<div class="w-grid3">';
-  h+='<button class="w-btn" style="'+c('#F87171','0B')+'" onclick="lg(\'CATAPLEXY\',{trigger:\'R\u00e1pido\'})"><span class="wi">\u26A0\uFE0F</span><span class="wl">Catap.</span></button>';
-  h+='<button class="w-btn" style="'+c('#FB7185','0B')+'" onclick="lg(\'GI\')"><span class="wi">\u{1F525}</span><span class="wl">GI</span></button>';
-  h+='<button class="w-btn" style="'+c('#06B6D4','0B')+'" onclick="lg(\'GRIPPER\')"><span class="wi">\u270A</span><span class="wl">Activ.</span></button>';
-  h+='<button class="w-btn" style="'+c('#A78BFA','0B')+'" onclick="lg(\'WAKE_NIGHT\')"><span class="wi">\u{1F319}</span><span class="wl">Desp.</span></button>';
-  h+='<button class="w-btn" style="'+c('#C084FC','0B')+'" onclick="lg(\'DREAM\')"><span class="wi">\u{1F4AD}</span><span class="wl">Sue\u00f1o</span></button>';
-  h+='<button class="w-btn" style="'+c('#34D399','0B')+'" onclick="lg(\'ROMERO\')"><span class="wi">\u{1F33F}</span><span class="wl">Romero</span></button>';
+  h+='<button class="w-btn" style="'+c('#F87171','0B')+'" onclick="lg(\'CATAPLEXY\',{trigger:\'Rápido\'})"><span class="wi">⚠️</span><span class="wl">Catap.</span></button>';
+  h+='<button class="w-btn" style="'+c('#FB7185','0B')+'" onclick="lg(\'GI\')"><span class="wi">🔥</span><span class="wl">GI</span></button>';
+  h+='<button class="w-btn" style="'+c('#06B6D4','0B')+'" onclick="lg(\'GRIPPER\')"><span class="wi">✊</span><span class="wl">Activ.</span></button>';
+  h+='<button class="w-btn" style="'+c('#A78BFA','0B')+'" onclick="lg(\'WAKE_NIGHT\')"><span class="wi">🌙</span><span class="wl">Desp.</span></button>';
+  h+='<button class="w-btn" style="'+c('#C084FC','0B')+'" onclick="lg(\'DREAM\')"><span class="wi">💭</span><span class="wl">Sueño</span></button>';
+  h+='<button class="w-btn" style="'+c('#34D399','0B')+'" onclick="lg(\'ROMERO\')"><span class="wi">🌿</span><span class="wl">Romero</span></button>';
   h+='</div></div>';
 
-  // P2: Nutrition
   h+='<div class="w-page '+(pg===2?'active':'')+'">';
-  h+='<div class="w-section">Nutrici\u00f3n</div>';
+  h+='<div class="w-section">Nutrición</div>';
   h+='<div class="w-grid">';
-  h+='<button class="w-btn" style="'+c('#60A5FA','0B')+'" onclick="lg(\'MEAL_LC\')"><span class="wi">\u{1F95A}</span><span class="wl">Low-Carb</span></button>';
-  h+='<button class="w-btn" style="'+c('#FB923C','0B')+'" onclick="lg(\'MEAL_CARB\')"><span class="wi">\u{1F35E}</span><span class="wl">Carbos</span></button>';
-  h+='<button class="w-btn" style="'+c('#A78BFA','0B')+'" onclick="lg(\'CREATINE\')"><span class="wi">\u26A1</span><span class="wl">Creatina</span></button>';
-  h+='<button class="w-btn" style="'+c('#34D399','0B')+'" onclick="lg(\'ROMERO\')"><span class="wi">\u{1F33F}</span><span class="wl">Romero</span></button>';
+  h+='<button class="w-btn" style="'+c('#60A5FA','0B')+'" onclick="lg(\'MEAL_LC\')"><span class="wi">🥚</span><span class="wl">Low-Carb</span></button>';
+  h+='<button class="w-btn" style="'+c('#FB923C','0B')+'" onclick="lg(\'MEAL_CARB\')"><span class="wi">🍞</span><span class="wl">Carbos</span></button>';
+  h+='<button class="w-btn" style="'+c('#A78BFA','0B')+'" onclick="lg(\'CREATINE\')"><span class="wi">⚡</span><span class="wl">Creatina</span></button>';
+  h+='<button class="w-btn" style="'+c('#34D399','0B')+'" onclick="lg(\'ROMERO\')"><span class="wi">🌿</span><span class="wl">Romero</span></button>';
   h+='</div></div>';
 
-  // Dots
+  h+='</div>';
+
   h+='<div class="w-dots">';for(var i=0;i<3;i++)h+='<button class="w-dot '+(pg===i?'active':'')+'" onclick="sp('+i+')"></button>';h+='</div>';
 
-  // Energy
   if(emod){
     h+='<div class="w-energy-overlay" onclick="emod=false;rn()"><div class="w-energy-wrap" onclick="event.stopPropagation()">';
-    h+='<div class="w-energy-title">Energ\u00eda</div><div class="w-energy-grid">';
-    for(var j=1;j<=10;j++){var ec=j<=3?'#EF4444':j<=6?'#F59E0B':'#4ADE80',eb=j<=3?'#EF444422':j<=6?'#F59E0B22':'#4ADE8022';
-    h+='<button class="w-ebtn" style="background:'+eb+';color:'+ec+'" onclick="emod=false;lg(\'ENERGY\',{energy:'+j+'})">'+j+'</button>';}
+    h+='<div class="w-energy-title">Energía</div><div class="w-energy-grid">';
+    for(var j=1;j<=10;j++){
+      var ec=j<=3?'#EF4444':j<=6?'#F59E0B':'#4ADE80',eb=j<=3?'#EF444422':j<=6?'#F59E0B22':'#4ADE8022';
+      h+='<button class="w-ebtn" style="background:'+eb+';color:'+ec+'" onclick="emod=false;lg(\'ENERGY\',{energy:'+j+'})">'+j+'</button>';
+    }
     h+='</div><button class="w-ecancel" onclick="emod=false;rn()">Cancelar</button></div></div>';
   }
   if(toast)h+='<div class="w-toast">'+toast+'</div>';
