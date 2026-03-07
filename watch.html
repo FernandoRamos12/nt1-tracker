@@ -296,18 +296,30 @@
 </style>
 </head>
 <body>
-<div class="watch" id="app"></div>
+<div class="watch" id="app"><div style="display:flex;align-items:center;justify-content:center;height:100%;color:#64748B;font-size:10px">Sync...</div></div>
 <script>
-var DB='nt1_events_v3',events=JSON.parse(localStorage.getItem(DB)||'[]'),nap=false,pg=0,toast=null,tt=null,emod=false;
-var ls=events.find(function(e){return e.type==='NAP_START'}),le=events.find(function(e){return e.type==='NAP_END'});
-if(ls&&(!le||new Date(ls.ts)>new Date(le.ts)))nap=true;
-function sv(){localStorage.setItem(DB,JSON.stringify(events))}
+var FB_URL='https://nt1-tracker-default-rtdb.firebaseio.com';
+var DB='nt1_events_v3',events=[],nap=false,pg=0,toast=null,tt=null,emod=false,synced=false;
+
+function fbPush(ev){fetch(FB_URL+'/events.json',{method:'POST',body:JSON.stringify(ev)}).then(function(){synced=true;rn()}).catch(function(){synced=false;rn()})}
+function fbLoad(){
+  fetch(FB_URL+'/events.json').then(function(r){return r.json()}).then(function(data){
+    if(!data){events=[];synced=true;ckNap();rn();return}
+    var arr=[];for(var k in data){if(data[k])arr.push(data[k])}
+    arr.sort(function(a,b){return new Date(b.ts)-new Date(a.ts)});
+    events=arr;synced=true;localStorage.setItem(DB,JSON.stringify(events));ckNap();rn();
+  }).catch(function(){
+    events=JSON.parse(localStorage.getItem(DB)||'[]');synced=false;ckNap();rn();
+  });
+}
+function ckNap(){var ls=events.find(function(e){return e.type==='NAP_START'}),le=events.find(function(e){return e.type==='NAP_END'});nap=!!(ls&&(!le||new Date(ls.ts)>new Date(le.ts)))}
 function td(){return new Date().toISOString().split('T')[0]}
 function id(){return Date.now().toString(36)+Math.random().toString(36).substr(2,5)}
 function lg(t,x){
   x=x||{};var e={id:id(),type:t,ts:new Date().toISOString(),date:td()};
   for(var k in x)e[k]=x[k];events.unshift(e);
-  if(t==='NAP_START')nap=true;if(t==='NAP_END')nap=false;sv();
+  if(t==='NAP_START')nap=true;if(t==='NAP_END')nap=false;
+  localStorage.setItem(DB,JSON.stringify(events));fbPush(e);
   var L={ZYDILO:'💊Zydilo',COFFEE:'☕Café',NAP_START:'😴Siesta',NAP_END:'⏰Fin',SDE:'🔴SDE',CATAPLEXY:'⚠Cataplejía',ENERGY:'📊E:'+(x.energy||''),GI:'🔥GI',GRIPPER:'✊Activ',MEAL_LC:'🥚LC',ROMERO:'🌿Romero',CREATINE:'⚡Cr',MEAL_CARB:'🍞Carb',WAKE_NIGHT:'🌙Desp',DREAM:'💭Sueño'};
   st(L[t]||t);rn();
 }
@@ -318,7 +330,8 @@ function rn(){
   cc=events.filter(function(e){return e.date===dy&&e.type==='COFFEE'}).length;
   var c=function(cl,o){return'border-color:'+cl+'33;color:'+cl+';background:'+cl+o+';'};
   var h='';
-  h+='<div class="w-header"><div class="w-title">◉ NT1</div>';
+  var sc=synced?'#4ADE80':'#EF4444';
+  h+='<div class="w-header"><div class="w-title">◉ NT1 <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:'+sc+';vertical-align:middle;margin-left:4px"></span></div>';
   h+='<div class="w-stats"><span class="w-stat">💊<b style="color:#4ADE80">'+(zc*50)+'</b>mg</span>';
   h+='<span class="w-stat">☕<b style="color:#F59E0B">'+cc+'</b></span>';
   if(nap)h+='<span class="w-stat" style="color:#818CF8">😴ON</span>';
@@ -379,7 +392,9 @@ function rn(){
 var tx=0;
 document.addEventListener('touchstart',function(e){tx=e.touches[0].clientX});
 document.addEventListener('touchend',function(e){var d=tx-e.changedTouches[0].clientX;if(Math.abs(d)>30){if(d>0&&pg<2){pg++;rn()}else if(d<0&&pg>0){pg--;rn()}}});
-setInterval(rn,60000);rn();
+setInterval(function(){fbLoad()},120000);
+setInterval(rn,60000);
+fbLoad();
 </script>
 </body>
 </html>

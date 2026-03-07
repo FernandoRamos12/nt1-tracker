@@ -16,331 +16,349 @@
     --green: #4ADE80; --yellow: #F59E0B; --blue: #60A5FA; --orange: #FB923C;
     --purple: #A78BFA; --indigo: #818CF8; --red: #EF4444; --redLight: #F87171;
     --teal: #06B6D4; --mint: #34D399; --pink: #FB7185; --violet: #C084FC;
-    --safe-top: env(safe-area-inset-top, 0px);
-    --safe-bottom: env(safe-area-inset-bottom, 0px);
   }
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-  body {
-    font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace;
-    background: var(--bg); color: var(--text);
-    min-height: 100vh; min-height: 100dvh;
-    overflow-x: hidden;
-    padding-top: var(--safe-top);
-    padding-bottom: calc(20px + var(--safe-bottom));
-  }
-  button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
-  button:active { transform: scale(0.96); }
-  .header { background: linear-gradient(180deg, var(--bg2) 0%, var(--bg) 100%); padding: 16px 16px 12px; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 50; }
-  .header-row { display: flex; justify-content: space-between; align-items: center; }
-  .header-label { font-size: 10px; color: var(--text3); letter-spacing: 2px; text-transform: uppercase; }
-  .header-title { font-size: 20px; font-weight: 700; color: #F8FAFC; margin-top: 2px; }
-  .header-time { font-size: 14px; color: var(--green); font-weight: 600; }
-  .header-date { font-size: 11px; color: var(--text3); }
-  .stats { display: flex; gap: 6px; margin-top: 10px; }
-  .stat { flex: 1; background: var(--bg3); border-radius: 8px; padding: 8px; border-left: 3px solid var(--text4); }
-  .stat-label { font-size: 9px; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; }
-  .stat-val { font-size: 17px; font-weight: 700; margin-top: 2px; }
-  .stat-unit { font-size: 9px; color: var(--text3); margin-left: 3px; }
-  .nav { display: flex; background: var(--bg2); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 40; }
-  .nav button { flex: 1; padding: 10px 4px; font-size: 11px; font-weight: 400; color: var(--text3); border-bottom: 2px solid transparent; transition: all 0.2s; }
-  .nav button.active { color: #F8FAFC; font-weight: 600; background: var(--bg3); border-bottom-color: var(--green); }
-  .section { padding: 0 16px; margin-top: 16px; }
-  .section-title { font-size: 10px; color: var(--text3); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px; }
-  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
-  .btn-event { padding: 14px 10px; border-radius: 10px; display: flex; flex-direction: column; align-items: center; gap: 5px; font-weight: 600; transition: all 0.15s; }
-  .btn-event .icon { font-size: 22px; }
-  .btn-event .label { font-size: 12px; }
-  .btn-sm { padding: 11px; border-radius: 10px; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 12px; font-weight: 600; }
-  .btn-colored { border: 1px solid; }
-  .timeline { border-left: 2px solid var(--bg3); padding-left: 16px; margin-top: 12px; }
-  .timeline-item { display: flex; align-items: center; justify-content: space-between; padding: 7px 0; position: relative; }
-  .timeline-dot { position: absolute; left: -22px; width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--bg); }
-  .timeline-info { display: flex; align-items: center; gap: 8px; }
-  .timeline-time { font-size: 11px; color: var(--text3); min-width: 42px; }
-  .timeline-label { font-size: 12px; }
-  .btn-delete { color: var(--text4); font-size: 14px; padding: 4px 8px; }
-  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: flex; align-items: flex-end; justify-content: center; z-index: 999; padding: 16px; }
-  .modal { background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; padding: 20px; width: 100%; max-width: 400px; }
-  .modal-title { font-size: 14px; font-weight: 600; margin-bottom: 14px; text-align: center; }
-  .modal-sub { font-size: 11px; color: var(--text3); margin-bottom: 12px; text-align: center; }
-  .energy-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 8px; }
-  .energy-btn { padding: 12px 8px; border: 1px solid var(--border); border-radius: 8px; font-size: 16px; font-weight: 700; text-align: center; }
-  .energy-labels { display: flex; justify-content: space-between; font-size: 10px; color: var(--text4); padding: 0 4px; }
-  .trigger-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .trigger-btn { padding: 12px; border: 1px solid rgba(248,113,113,0.2); border-radius: 8px; background: rgba(248,113,113,0.07); color: var(--redLight); font-size: 12px; font-weight: 500; }
-  .export-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 16px; }
-  .export-card h3 { font-size: 14px; font-weight: 600; color: #F8FAFC; margin-bottom: 8px; }
-  .export-stat { font-size: 12px; color: var(--text2); line-height: 1.9; }
-  .export-val { font-weight: 600; }
-  .btn-export { width: 100%; padding: 14px; border: 1px solid var(--green); border-radius: 10px; background: rgba(74,222,128,0.13); color: var(--green); font-size: 14px; font-weight: 600; margin-bottom: 8px; }
-  .btn-danger { width: 100%; padding: 10px; border: 1px solid rgba(71,85,105,0.2); border-radius: 8px; color: var(--text3); font-size: 12px; margin-top: 20px; }
-  .day-btn { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg2); color: var(--text); font-size: 13px; font-weight: 500; display: flex; justify-content: space-between; align-items: center; text-align: left; margin-bottom: 8px; }
-  .day-btn.active { background: var(--bg3); }
-  .day-count { color: var(--text3); font-size: 11px; }
-  .day-events { padding: 4px 0 8px 12px; border-left: 2px solid var(--bg3); margin-left: 12px; margin-bottom: 8px; }
-  .day-event { display: flex; align-items: center; gap: 8px; padding: 5px 0; font-size: 12px; }
-  .day-event-time { color: var(--text3); min-width: 42px; }
-  .empty { text-align: center; color: var(--text4); padding: 40px 20px; font-size: 13px; }
+  body { font-family: 'SF Mono','Fira Code','Courier New',monospace; background:var(--bg); color:var(--text); min-height:100vh; min-height:100dvh; overflow-x:hidden; padding-bottom:20px; }
+  button { font-family:inherit; cursor:pointer; border:none; background:none; color:inherit; }
+  button:active { transform:scale(0.96); }
+  .header { background:linear-gradient(180deg,var(--bg2) 0%,var(--bg) 100%); padding:16px 16px 12px; border-bottom:1px solid var(--border); position:sticky; top:0; z-index:50; }
+  .header-row { display:flex; justify-content:space-between; align-items:center; }
+  .header-label { font-size:10px; color:var(--text3); letter-spacing:2px; text-transform:uppercase; }
+  .header-title { font-size:20px; font-weight:700; color:#F8FAFC; margin-top:2px; }
+  .header-time { font-size:14px; color:var(--green); font-weight:600; }
+  .header-date { font-size:11px; color:var(--text3); }
+  .sync-dot { display:inline-block; width:6px; height:6px; border-radius:50%; margin-left:6px; vertical-align:middle; }
+  .stats { display:flex; gap:6px; margin-top:10px; }
+  .stat { flex:1; background:var(--bg3); border-radius:8px; padding:8px; border-left:3px solid var(--text4); }
+  .stat-label { font-size:9px; color:var(--text3); text-transform:uppercase; letter-spacing:1px; }
+  .stat-val { font-size:17px; font-weight:700; margin-top:2px; }
+  .stat-unit { font-size:9px; color:var(--text3); margin-left:3px; }
+  .nav { display:flex; background:var(--bg2); border-bottom:1px solid var(--border); }
+  .nav button { flex:1; padding:10px 4px; font-size:11px; font-weight:400; color:var(--text3); border-bottom:2px solid transparent; transition:all 0.2s; }
+  .nav button.active { color:#F8FAFC; font-weight:600; background:var(--bg3); border-bottom-color:var(--green); }
+  .section { padding:0 16px; margin-top:16px; }
+  .section-title { font-size:10px; color:var(--text3); letter-spacing:1.5px; text-transform:uppercase; margin-bottom:8px; }
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .grid3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; }
+  .btn-event { padding:14px 10px; border-radius:10px; display:flex; flex-direction:column; align-items:center; gap:5px; font-weight:600; transition:all 0.15s; }
+  .btn-event .icon { font-size:22px; }
+  .btn-event .label { font-size:12px; }
+  .btn-sm { padding:11px; border-radius:10px; display:flex; align-items:center; justify-content:center; gap:6px; font-size:12px; font-weight:600; }
+  .btn-colored { border:1px solid; }
+  .timeline { border-left:2px solid var(--bg3); padding-left:16px; margin-top:12px; }
+  .timeline-item { display:flex; align-items:center; justify-content:space-between; padding:7px 0; position:relative; }
+  .timeline-dot { position:absolute; left:-22px; width:10px; height:10px; border-radius:50%; border:2px solid var(--bg); }
+  .timeline-info { display:flex; align-items:center; gap:8px; }
+  .timeline-time { font-size:11px; color:var(--text3); min-width:42px; }
+  .timeline-label { font-size:12px; }
+  .btn-delete { color:var(--text4); font-size:14px; padding:4px 8px; }
+  .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.85); display:flex; align-items:flex-end; justify-content:center; z-index:999; padding:16px; }
+  .modal { background:var(--bg2); border:1px solid var(--border); border-radius:16px; padding:20px; width:100%; max-width:400px; }
+  .modal-title { font-size:14px; font-weight:600; margin-bottom:14px; text-align:center; }
+  .modal-sub { font-size:11px; color:var(--text3); margin-bottom:12px; text-align:center; }
+  .energy-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:8px; margin-bottom:8px; }
+  .energy-btn { padding:12px 8px; border:1px solid var(--border); border-radius:8px; font-size:16px; font-weight:700; text-align:center; }
+  .energy-labels { display:flex; justify-content:space-between; font-size:10px; color:var(--text4); padding:0 4px; }
+  .trigger-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .trigger-btn { padding:12px; border:1px solid rgba(248,113,113,0.2); border-radius:8px; background:rgba(248,113,113,0.07); color:var(--redLight); font-size:12px; font-weight:500; }
+  .export-card { background:var(--bg2); border:1px solid var(--border); border-radius:10px; padding:16px; margin-bottom:16px; }
+  .export-card h3 { font-size:14px; font-weight:600; color:#F8FAFC; margin-bottom:8px; }
+  .export-stat { font-size:12px; color:var(--text2); line-height:1.9; }
+  .export-val { font-weight:600; }
+  .btn-export { width:100%; padding:14px; border:1px solid var(--green); border-radius:10px; background:rgba(74,222,128,0.13); color:var(--green); font-size:14px; font-weight:600; margin-bottom:8px; }
+  .btn-danger { width:100%; padding:10px; border:1px solid rgba(71,85,105,0.2); border-radius:8px; color:var(--text3); font-size:12px; margin-top:20px; }
+  .day-btn { width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:8px; background:var(--bg2); color:var(--text); font-size:13px; font-weight:500; display:flex; justify-content:space-between; align-items:center; text-align:left; margin-bottom:8px; }
+  .day-btn.active { background:var(--bg3); }
+  .day-count { color:var(--text3); font-size:11px; }
+  .day-events { padding:4px 0 8px 12px; border-left:2px solid var(--bg3); margin-left:12px; margin-bottom:8px; }
+  .day-event { display:flex; align-items:center; gap:8px; padding:5px 0; font-size:12px; }
+  .day-event-time { color:var(--text3); min-width:42px; }
+  .empty { text-align:center; color:var(--text4); padding:40px 20px; font-size:13px; }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.6} }
-  .nap-active { animation: pulse 2s infinite; }
-  .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: var(--bg3); color: #F8FAFC; padding: 10px 20px; border-radius: 8px; font-size: 13px; z-index: 1000; border: 1px solid var(--border); box-shadow: 0 8px 32px rgba(0,0,0,0.5); animation: fadeIn 0.2s ease; }
+  .nap-active { animation:pulse 2s infinite; }
+  .toast { position:fixed; top:20px; left:50%; transform:translateX(-50%); background:var(--bg3); color:#F8FAFC; padding:10px 20px; border-radius:8px; font-size:13px; z-index:1000; border:1px solid var(--border); box-shadow:0 8px 32px rgba(0,0,0,0.5); animation:fadeIn 0.2s ease; }
   @keyframes fadeIn { from{opacity:0;transform:translateX(-50%) translateY(-10px)} to{opacity:1;transform:translateX(-50%) translateY(0)} }
-  .sched-item { display: flex; align-items: center; justify-content: space-between; padding: 12px; background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 8px; }
-  .sched-left { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
-  .sched-icon { font-size: 18px; flex-shrink: 0; }
-  .sched-info { display: flex; flex-direction: column; min-width: 0; }
-  .sched-name { font-size: 11px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .sched-desc { font-size: 9px; color: var(--text3); margin-top: 2px; }
-  .sched-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
-  .sched-time-input { background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; color: var(--green); font-family: inherit; font-size: 13px; font-weight: 700; padding: 6px 4px; width: 65px; text-align: center; }
-  .sched-time-input::-webkit-calendar-picker-indicator { filter: invert(1); }
-  .toggle { position: relative; width: 40px; height: 22px; flex-shrink: 0; }
-  .toggle input { opacity: 0; width: 0; height: 0; }
-  .toggle-slider { position: absolute; inset: 0; background: var(--bg3); border-radius: 11px; cursor: pointer; transition: all 0.3s; border: 1px solid var(--border); }
-  .toggle-slider::before { content: ''; position: absolute; width: 16px; height: 16px; left: 2px; bottom: 2px; background: var(--text3); border-radius: 50%; transition: all 0.3s; }
-  .toggle input:checked + .toggle-slider { background: var(--green); border-color: var(--green); }
-  .toggle input:checked + .toggle-slider::before { transform: translateX(18px); background: #FFF; }
-  .notif-banner { padding: 14px; background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.3); border-radius: 10px; margin-bottom: 16px; text-align: center; }
-  .notif-banner-text { font-size: 12px; color: var(--redLight); margin-bottom: 8px; }
-  .btn-notif-enable { padding: 10px 20px; border-radius: 8px; font-size: 12px; font-weight: 600; background: var(--green); color: #000; border: none; }
-  .sched-section-label { font-size: 9px; color: var(--text4); letter-spacing: 1.5px; text-transform: uppercase; margin: 16px 0 8px; padding-bottom: 4px; border-bottom: 1px solid var(--border); }
+  .sched-item { display:flex; align-items:center; justify-content:space-between; padding:12px; background:var(--bg2); border:1px solid var(--border); border-radius:10px; margin-bottom:8px; }
+  .sched-left { display:flex; align-items:center; gap:10px; flex:1; min-width:0; }
+  .sched-icon { font-size:18px; flex-shrink:0; }
+  .sched-info { display:flex; flex-direction:column; min-width:0; }
+  .sched-name { font-size:11px; font-weight:600; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .sched-desc { font-size:9px; color:var(--text3); margin-top:2px; }
+  .sched-right { display:flex; align-items:center; gap:8px; flex-shrink:0; }
+  .sched-time-input { background:var(--bg3); border:1px solid var(--border); border-radius:6px; color:var(--green); font-family:inherit; font-size:13px; font-weight:700; padding:6px 4px; width:65px; text-align:center; }
+  .sched-time-input::-webkit-calendar-picker-indicator { filter:invert(1); }
+  .toggle { position:relative; width:40px; height:22px; flex-shrink:0; }
+  .toggle input { opacity:0; width:0; height:0; }
+  .toggle-slider { position:absolute; inset:0; background:var(--bg3); border-radius:11px; cursor:pointer; transition:all 0.3s; border:1px solid var(--border); }
+  .toggle-slider::before { content:''; position:absolute; width:16px; height:16px; left:2px; bottom:2px; background:var(--text3); border-radius:50%; transition:all 0.3s; }
+  .toggle input:checked + .toggle-slider { background:var(--green); border-color:var(--green); }
+  .toggle input:checked + .toggle-slider::before { transform:translateX(18px); background:#FFF; }
+  .notif-banner { padding:14px; background:rgba(248,113,113,0.1); border:1px solid rgba(248,113,113,0.3); border-radius:10px; margin-bottom:16px; text-align:center; }
+  .notif-banner-text { font-size:12px; color:var(--redLight); margin-bottom:8px; }
+  .btn-notif-enable { padding:10px 20px; border-radius:8px; font-size:12px; font-weight:600; background:var(--green); color:#000; border:none; }
+  .sched-section-label { font-size:9px; color:var(--text4); letter-spacing:1.5px; text-transform:uppercase; margin:16px 0 8px; padding-bottom:4px; border-bottom:1px solid var(--border); }
 </style>
 </head>
 <body>
-<div id="app"></div>
+<div id="app"><div style="display:flex;align-items:center;justify-content:center;min-height:100vh;color:#64748B">Cargando...</div></div>
 <script>
-const DB_KEY = 'nt1_events_v3';
-const SCHED_KEY = 'nt1_schedule_v1';
-const FIRED_KEY = 'nt1_fired_today';
-const TYPES = {
-  ZYDILO:    { label:'Zydilo 50mg',      icon:'\u{1F48A}', color:'#4ADE80', cat:'pharma' },
-  COFFEE:    { label:'Caf\u00e9 \u00BC taza',       icon:'\u2615', color:'#F59E0B', cat:'stimulant' },
-  MEAL_LC:   { label:'Comida Low-Carb',   icon:'\u{1F95A}', color:'#60A5FA', cat:'nutrition' },
-  MEAL_CARB: { label:'Comida c/Carbos',   icon:'\u{1F35E}', color:'#FB923C', cat:'nutrition' },
-  CREATINE:  { label:'Creatina 5g',       icon:'\u26A1', color:'#A78BFA', cat:'supplement' },
-  ROMERO:    { label:'Romero 300ml',      icon:'\u{1F33F}', color:'#34D399', cat:'supplement' },
-  NAP_START: { label:'Siesta Inicio',     icon:'\u{1F634}', color:'#818CF8', cat:'sleep' },
-  NAP_END:   { label:'Siesta Fin',        icon:'\u23F0', color:'#818CF8', cat:'sleep' },
-  CATAPLEXY: { label:'Cataplej\u00eda',   icon:'\u26A0\uFE0F', color:'#F87171', cat:'clinical' },
-  SDE:       { label:'Ataque SDE',        icon:'\u{1F534}', color:'#EF4444', cat:'clinical' },
-  GRIPPER:   { label:'Micro-activaci\u00f3n', icon:'\u270A', color:'#06B6D4', cat:'activation' },
-  GI:        { label:'Malestar GI',       icon:'\u{1F525}', color:'#FB7185', cat:'clinical' },
-  WAKE_NIGHT:{ label:'Despertar Nocturno',icon:'\u{1F319}', color:'#A78BFA', cat:'sleep' },
-  DREAM:     { label:'Sue\u00f1o V\u00edvido', icon:'\u{1F4AD}', color:'#C084FC', cat:'sleep' },
-  ENERGY:    { label:'Energ\u00eda',      icon:'\u{1F4CA}', color:'#E2E8F0', cat:'metric' },
+// ============================================================
+// NT1 TRACKER v0.4 — Firebase Sync
+// ============================================================
+var FB_URL = 'https://nt1-tracker-default-rtdb.firebaseio.com';
+var DB_KEY = 'nt1_events_v3';
+var SCHED_KEY = 'nt1_schedule_v1';
+var FIRED_KEY = 'nt1_fired_today';
+
+var TYPES = {
+  ZYDILO:{label:'Zydilo 50mg',icon:'\u{1F48A}',color:'#4ADE80',cat:'pharma'},
+  COFFEE:{label:'Caf\u00e9 \u00BC taza',icon:'\u2615',color:'#F59E0B',cat:'stimulant'},
+  MEAL_LC:{label:'Comida Low-Carb',icon:'\u{1F95A}',color:'#60A5FA',cat:'nutrition'},
+  MEAL_CARB:{label:'Comida c/Carbos',icon:'\u{1F35E}',color:'#FB923C',cat:'nutrition'},
+  CREATINE:{label:'Creatina 5g',icon:'\u26A1',color:'#A78BFA',cat:'supplement'},
+  ROMERO:{label:'Romero 300ml',icon:'\u{1F33F}',color:'#34D399',cat:'supplement'},
+  NAP_START:{label:'Siesta Inicio',icon:'\u{1F634}',color:'#818CF8',cat:'sleep'},
+  NAP_END:{label:'Siesta Fin',icon:'\u23F0',color:'#818CF8',cat:'sleep'},
+  CATAPLEXY:{label:'Cataplej\u00eda',icon:'\u26A0\uFE0F',color:'#F87171',cat:'clinical'},
+  SDE:{label:'Ataque SDE',icon:'\u{1F534}',color:'#EF4444',cat:'clinical'},
+  GRIPPER:{label:'Micro-activaci\u00f3n',icon:'\u270A',color:'#06B6D4',cat:'activation'},
+  GI:{label:'Malestar GI',icon:'\u{1F525}',color:'#FB7185',cat:'clinical'},
+  WAKE_NIGHT:{label:'Despertar Nocturno',icon:'\u{1F319}',color:'#A78BFA',cat:'sleep'},
+  DREAM:{label:'Sue\u00f1o V\u00edvido',icon:'\u{1F4AD}',color:'#C084FC',cat:'sleep'},
+  ENERGY:{label:'Energ\u00eda',icon:'\u{1F4CA}',color:'#E2E8F0',cat:'metric'}
 };
-const DEFAULT_SCHEDULE = [
-  { id:'zydilo_am',   time:'06:15', label:'Zydilo 50mg + Agua',        icon:'\u{1F48A}', desc:'Al abrir los ojos', enabled:true,  group:'am' },
-  { id:'nuts_am',     time:'06:20', label:'Nueces antes de caf\u00e9', icon:'\u{1F95C}', desc:'Proteger est\u00f3mago', enabled:true,  group:'am' },
-  { id:'v60',         time:'06:30', label:'Preparar V60',              icon:'\u2615', desc:'Sin avena', enabled:true,  group:'am' },
-  { id:'coffee_drink',time:'07:15', label:'Caf\u00e9 listo',           icon:'\u{1F454}', desc:'Mientras te preparas', enabled:true,  group:'am' },
-  { id:'energy_9',    time:'09:00', label:'Registrar Energ\u00eda',    icon:'\u{1F4CA}', desc:'\u00bfYa encendiste?', enabled:true,  group:'work' },
-  { id:'zydilo_pm',   time:'13:15', label:'Zydilo 50mg Pre-comida',    icon:'\u{1F48A}', desc:'45 min antes de comer', enabled:true,  group:'work' },
-  { id:'meal',        time:'14:00', label:'Comida Low-Carb',           icon:'\u{1F95A}', desc:'Huevos + grasa, sin tostadas', enabled:true,  group:'work' },
-  { id:'coffenap',    time:'14:15', label:'Coffee Nap \u2014 20 min',  icon:'\u{1F634}', desc:'Caf\u00e9 + cerrar ojos', enabled:true,  group:'work' },
-  { id:'gemba',       time:'14:40', label:'Gemba Walk \u2014 Planta',  icon:'\u{1F3ED}', desc:'Puente f\u00edsico post-siesta', enabled:true,  group:'work' },
-  { id:'energy_15',   time:'15:00', label:'Registrar Energ\u00eda',    icon:'\u{1F4CA}', desc:'\u00bfC\u00f3mo va la tarde?', enabled:true,  group:'work' },
-  { id:'coffee_stop', time:'18:00', label:'HARD STOP Caf\u00e9',       icon:'\u{1F6AB}', desc:'\u00daltima dosis de cafe\u00edna', enabled:true,  group:'pm' },
-  { id:'dinner',      time:'20:00', label:'Cena con Carbohidratos',    icon:'\u{1F35E}', desc:'Avena + Creatina 5g', enabled:true,  group:'pm' },
-  { id:'romero',      time:'20:30', label:'Romero 300ml',              icon:'\u{1F33F}', desc:'Decocci\u00f3n nocturna', enabled:true,  group:'pm' },
-  { id:'prepare_bed', time:'22:15', label:'Preparar para dormir',      icon:'\u{1F319}', desc:'Ba\u00f1o, rutina nocturna', enabled:true,  group:'pm' },
-  { id:'sleep',       time:'22:30', label:'A la cama',                 icon:'\u{1F6CF}\uFE0F', desc:'Meta: 7h45m de sue\u00f1o', enabled:true,  group:'pm' },
+
+var DEFAULT_SCHEDULE = [
+  {id:'zydilo_am',time:'06:15',label:'Zydilo 50mg + Agua',icon:'\u{1F48A}',desc:'Al abrir los ojos',enabled:true,group:'am'},
+  {id:'nuts_am',time:'06:20',label:'Nueces antes de caf\u00e9',icon:'\u{1F95C}',desc:'Proteger est\u00f3mago',enabled:true,group:'am'},
+  {id:'v60',time:'06:30',label:'Preparar V60',icon:'\u2615',desc:'Sin avena',enabled:true,group:'am'},
+  {id:'coffee_drink',time:'07:15',label:'Caf\u00e9 listo',icon:'\u{1F454}',desc:'Mientras te preparas',enabled:true,group:'am'},
+  {id:'energy_9',time:'09:00',label:'Registrar Energ\u00eda',icon:'\u{1F4CA}',desc:'\u00bfYa encendiste?',enabled:true,group:'work'},
+  {id:'zydilo_pm',time:'13:15',label:'Zydilo 50mg Pre-comida',icon:'\u{1F48A}',desc:'45 min antes de comer',enabled:true,group:'work'},
+  {id:'meal',time:'14:00',label:'Comida Low-Carb',icon:'\u{1F95A}',desc:'Huevos + grasa, sin tostadas',enabled:true,group:'work'},
+  {id:'coffenap',time:'14:15',label:'Coffee Nap 20 min',icon:'\u{1F634}',desc:'Caf\u00e9 + cerrar ojos',enabled:true,group:'work'},
+  {id:'gemba',time:'14:40',label:'Gemba Walk',icon:'\u{1F3ED}',desc:'Puente f\u00edsico post-siesta',enabled:true,group:'work'},
+  {id:'energy_15',time:'15:00',label:'Registrar Energ\u00eda',icon:'\u{1F4CA}',desc:'\u00bfC\u00f3mo va la tarde?',enabled:true,group:'work'},
+  {id:'coffee_stop',time:'18:00',label:'HARD STOP Caf\u00e9',icon:'\u{1F6AB}',desc:'\u00daltima dosis',enabled:true,group:'pm'},
+  {id:'dinner',time:'20:00',label:'Cena con Carbohidratos',icon:'\u{1F35E}',desc:'Avena + Creatina 5g',enabled:true,group:'pm'},
+  {id:'romero',time:'20:30',label:'Romero 300ml',icon:'\u{1F33F}',desc:'Decocci\u00f3n nocturna',enabled:true,group:'pm'},
+  {id:'prepare_bed',time:'22:15',label:'Preparar para dormir',icon:'\u{1F319}',desc:'Rutina nocturna',enabled:true,group:'pm'},
+  {id:'sleep',time:'22:30',label:'A la cama',icon:'\u{1F6CF}\uFE0F',desc:'Meta: 7h45m',enabled:true,group:'pm'}
 ];
 
-let state = {
-  events: JSON.parse(localStorage.getItem(DB_KEY) || '[]'),
-  schedule: JSON.parse(localStorage.getItem(SCHED_KEY) || 'null') || JSON.parse(JSON.stringify(DEFAULT_SCHEDULE)),
-  firedToday: JSON.parse(localStorage.getItem(FIRED_KEY) || '{}'),
+var state = {
+  events: [],
+  schedule: JSON.parse(localStorage.getItem(SCHED_KEY)||'null') || JSON.parse(JSON.stringify(DEFAULT_SCHEDULE)),
+  firedToday: JSON.parse(localStorage.getItem(FIRED_KEY)||'{}'),
   view: 'log', napActive: false, modal: null, selectedDate: '', toast: null,
   notifPermission: ('Notification' in window) ? Notification.permission : 'denied',
+  synced: false, loading: true
 };
-const lns = state.events.find(e => e.type === 'NAP_START');
-const lne = state.events.find(e => e.type === 'NAP_END');
-if (lns && (!lne || new Date(lns.ts) > new Date(lne.ts))) state.napActive = true;
 
-function save() { localStorage.setItem(DB_KEY, JSON.stringify(state.events)); }
-function saveSched() { localStorage.setItem(SCHED_KEY, JSON.stringify(state.schedule)); }
-function saveFired() { localStorage.setItem(FIRED_KEY, JSON.stringify(state.firedToday)); }
-function today() { return new Date().toISOString().split('T')[0]; }
-function fmtTime(iso) { return new Date(iso).toLocaleTimeString('es-MX', { hour:'2-digit', minute:'2-digit', hour12:false }); }
-function fmtDate(ds) { return new Date(ds + 'T12:00:00').toLocaleDateString('es-MX', { weekday:'long', day:'numeric', month:'short' }); }
-function uid() { return Date.now().toString(36) + Math.random().toString(36).substr(2,5); }
+// ============================================================
+// FIREBASE SYNC
+// ============================================================
+function fbPush(ev) {
+  fetch(FB_URL+'/events.json', {method:'POST',body:JSON.stringify(ev)}).then(function(r){return r.json()}).then(function(){state.synced=true;render()}).catch(function(){state.synced=false;render()});
+}
+function fbDelete(id) {
+  // Find firebase key by event id
+  fetch(FB_URL+'/events.json').then(function(r){return r.json()}).then(function(data){
+    if(!data)return;
+    for(var k in data){ if(data[k]&&data[k].id===id){fetch(FB_URL+'/events/'+k+'.json',{method:'DELETE'});break;} }
+  }).catch(function(){});
+}
+function fbLoad() {
+  return fetch(FB_URL+'/events.json').then(function(r){return r.json()}).then(function(data){
+    if(!data){state.events=[];state.synced=true;state.loading=false;checkNap();render();return;}
+    var arr=[];for(var k in data){if(data[k])arr.push(data[k]);}
+    arr.sort(function(a,b){return new Date(b.ts)-new Date(a.ts)});
+    state.events=arr;state.synced=true;state.loading=false;checkNap();render();
+  }).catch(function(){
+    state.events=JSON.parse(localStorage.getItem(DB_KEY)||'[]');
+    state.synced=false;state.loading=false;checkNap();render();
+  });
+}
+function fbClear() {
+  fetch(FB_URL+'/events.json',{method:'DELETE'}).catch(function(){});
+}
+function localSave(){localStorage.setItem(DB_KEY,JSON.stringify(state.events));}
+function saveSched(){localStorage.setItem(SCHED_KEY,JSON.stringify(state.schedule));}
+function saveFired(){localStorage.setItem(FIRED_KEY,JSON.stringify(state.firedToday));}
 
-function logEvent(type, extra) {
-  extra = extra || {};
-  var ev = { id: uid(), type: type, ts: new Date().toISOString(), date: today() };
-  for (var k in extra) ev[k] = extra[k];
+function checkNap(){
+  var lns=state.events.find(function(e){return e.type==='NAP_START'});
+  var lne=state.events.find(function(e){return e.type==='NAP_END'});
+  state.napActive=!!(lns&&(!lne||new Date(lns.ts)>new Date(lne.ts)));
+}
+
+function today(){return new Date().toISOString().split('T')[0]}
+function fmtTime(iso){return new Date(iso).toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit',hour12:false})}
+function fmtDate(ds){return new Date(ds+'T12:00:00').toLocaleDateString('es-MX',{weekday:'long',day:'numeric',month:'short'})}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).substr(2,5)}
+
+function logEvent(type,extra){
+  extra=extra||{};
+  var ev={id:uid(),type:type,ts:new Date().toISOString(),date:today()};
+  for(var k in extra)ev[k]=extra[k];
   state.events.unshift(ev);
-  if (type === 'NAP_START') state.napActive = true;
-  if (type === 'NAP_END') state.napActive = false;
-  save(); showToast(TYPES[type].icon + ' ' + TYPES[type].label + ' registrado'); render();
+  if(type==='NAP_START')state.napActive=true;
+  if(type==='NAP_END')state.napActive=false;
+  localSave(); fbPush(ev);
+  showToast(TYPES[type].icon+' '+TYPES[type].label+' registrado');
+  render();
 }
-function deleteEvent(id) { state.events = state.events.filter(function(e){return e.id !== id}); save(); showToast('Evento eliminado'); render(); }
-var toastTimer = null;
-function showToast(msg) { state.toast = msg; render(); clearTimeout(toastTimer); toastTimer = setTimeout(function(){ state.toast = null; render(); }, 2500); }
-function setView(v) { state.view = v; render(); }
-function setModal(m) { state.modal = m; render(); }
-function toggleDate(d) { state.selectedDate = state.selectedDate === d ? '' : d; render(); }
+function deleteEvent(id){
+  state.events=state.events.filter(function(e){return e.id!==id});
+  localSave(); fbDelete(id);
+  showToast('Evento eliminado'); render();
+}
 
-// NOTIFICATIONS
-function requestNotifPermission() {
-  if (!('Notification' in window)) { showToast('Tu navegador no soporta notificaciones'); return; }
-  Notification.requestPermission().then(function(perm) {
-    state.notifPermission = perm;
-    if (perm === 'granted') showToast('\u{1F514} Notificaciones activadas');
-    else showToast('Denegadas \u2014 act\u00edvalas en ajustes de Chrome');
-    render();
+var toastTimer=null;
+function showToast(m){state.toast=m;render();clearTimeout(toastTimer);toastTimer=setTimeout(function(){state.toast=null;render()},2500)}
+function setView(v){state.view=v;render()}
+function setModal(m){state.modal=m;render()}
+function toggleDate(d){state.selectedDate=state.selectedDate===d?'':d;render()}
+
+// Notifications
+function requestNotifPermission(){
+  if(!('Notification' in window)){showToast('No soportado');return}
+  Notification.requestPermission().then(function(p){state.notifPermission=p;showToast(p==='granted'?'\u{1F514} Activadas':'Denegadas');render()});
+}
+function fireNotification(item){
+  if(state.notifPermission!=='granted')return;
+  try{
+    if('serviceWorker' in navigator&&navigator.serviceWorker.controller){navigator.serviceWorker.ready.then(function(r){r.showNotification('NT1 '+item.icon,{body:item.label+'\n'+(item.desc||''),tag:item.id,vibrate:[200,100,200]})});}
+    else{new Notification('NT1 '+item.icon,{body:item.label,tag:item.id});}
+  }catch(e){}
+}
+function checkSchedule(){
+  var hhmm=new Date().toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit',hour12:false});
+  var dy=today();
+  if(state.firedToday._date!==dy){state.firedToday={_date:dy};saveFired();}
+  state.schedule.forEach(function(item){
+    if(!item.enabled||state.firedToday[item.id])return;
+    if(item.time===hhmm){fireNotification(item);state.firedToday[item.id]=true;saveFired();}
   });
 }
-function fireNotification(item) {
-  if (state.notifPermission !== 'granted') return;
-  try {
-    if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
-      navigator.serviceWorker.ready.then(function(reg) {
-        reg.showNotification('Fernando 2.0 \u2014 ' + item.icon, { body: item.label + '\n' + (item.desc||''), tag: item.id, vibrate: [200,100,200] });
-      });
-    } else {
-      new Notification('Fernando 2.0 \u2014 ' + item.icon, { body: item.label + '\n' + (item.desc||''), tag: item.id });
-    }
-  } catch(e) { console.log('Notif error', e); }
-}
-function checkSchedule() {
-  var now = new Date();
-  var todayStr = today();
-  var hhmm = now.toLocaleTimeString('es-MX', { hour:'2-digit', minute:'2-digit', hour12:false });
-  if (state.firedToday._date !== todayStr) { state.firedToday = { _date: todayStr }; saveFired(); }
-  state.schedule.forEach(function(item) {
-    if (!item.enabled) return;
-    if (state.firedToday[item.id]) return;
-    if (item.time === hhmm) { fireNotification(item); state.firedToday[item.id] = true; saveFired(); }
-  });
-}
-setInterval(checkSchedule, 30000);
-checkSchedule();
+setInterval(checkSchedule,30000);
 
-function updateSchedTime(id, val) { var it = state.schedule.find(function(s){return s.id===id}); if(it){it.time=val; saveSched(); render();} }
-function toggleSchedItem(id) { var it = state.schedule.find(function(s){return s.id===id}); if(it){it.enabled=!it.enabled; saveSched(); render();} }
-function resetSchedule() { if(confirm('\u00bfRestaurar horarios por defecto?')){state.schedule=JSON.parse(JSON.stringify(DEFAULT_SCHEDULE)); saveSched(); showToast('Horarios restaurados'); render();} }
-function exportCSV() {
-  var h = 'Fecha,Hora,Evento,Categor\u00eda,Nivel Energ\u00eda,Gatillo Cataplej\u00eda\n';
-  var rows = state.events.slice().sort(function(a,b){return new Date(a.ts)-new Date(b.ts)}).map(function(e){
-    var t = TYPES[e.type]; return e.date+','+fmtTime(e.ts)+','+t.label+','+t.cat+','+(e.energy||'')+','+(e.trigger||'');
-  }).join('\n');
-  var blob = new Blob([h+rows], {type:'text/csv;charset=utf-8;'});
-  var a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='NT1_Expediente_'+today()+'.csv'; a.click();
-}
-function clearAll() { if(confirm('\u00bfBorrar TODOS los registros?')){state.events=[];save();showToast('Datos eliminados');render();} }
+function updateSchedTime(id,v){var it=state.schedule.find(function(s){return s.id===id});if(it){it.time=v;saveSched();render()}}
+function toggleSchedItem(id){var it=state.schedule.find(function(s){return s.id===id});if(it){it.enabled=!it.enabled;saveSched();render()}}
+function resetSchedule(){if(confirm('Restaurar?')){state.schedule=JSON.parse(JSON.stringify(DEFAULT_SCHEDULE));saveSched();showToast('Restaurado');render()}}
 
+function exportCSV(){
+  var h='Fecha,Hora,Evento,Categor\u00eda,Energ\u00eda,Gatillo\n';
+  var rows=state.events.slice().sort(function(a,b){return new Date(a.ts)-new Date(b.ts)}).map(function(e){var t=TYPES[e.type];return e.date+','+fmtTime(e.ts)+','+t.label+','+t.cat+','+(e.energy||'')+','+(e.trigger||'')}).join('\n');
+  var b=new Blob([h+rows],{type:'text/csv;charset=utf-8;'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='NT1_Expediente_'+today()+'.csv';a.click();
+}
+function clearAll(){if(confirm('Borrar TODO?')){state.events=[];localSave();fbClear();showToast('Eliminado');render()}}
+function refreshSync(){state.loading=true;render();fbLoad();}
+
+// ============================================================
 // RENDER
-function render() {
-  var now = new Date(), todayStr = today();
-  var todayEvents = state.events.filter(function(e){return e.date===todayStr}).sort(function(a,b){return new Date(a.ts)-new Date(b.ts)});
-  var zydiloToday = state.events.filter(function(e){return e.date===todayStr && e.type==='ZYDILO'}).length;
-  var coffeeToday = state.events.filter(function(e){return e.date===todayStr && e.type==='COFFEE'}).length;
-  var dates = {}; state.events.forEach(function(e){dates[e.date]=1}); var uniqueDates = Object.keys(dates).sort().reverse();
-  var cs = function(c, o) { return 'border:1px solid '+c+'33;background:'+c+o+';color:'+c+';'; };
-  var h = '';
+// ============================================================
+function render(){
+  if(state.loading){document.getElementById('app').innerHTML='<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;color:#64748B;flex-direction:column;gap:8px"><div style="font-size:28px">\u25CE</div><div style="font-size:12px">Sincronizando con Firebase...</div></div>';return;}
+  var now=new Date(),dy=today();
+  var te=state.events.filter(function(e){return e.date===dy}).sort(function(a,b){return new Date(a.ts)-new Date(b.ts)});
+  var zc=state.events.filter(function(e){return e.date===dy&&e.type==='ZYDILO'}).length;
+  var cc=state.events.filter(function(e){return e.date===dy&&e.type==='COFFEE'}).length;
+  var dates={};state.events.forEach(function(e){dates[e.date]=1});var ud=Object.keys(dates).sort().reverse();
+  var cs=function(c,o){return'border-color:'+c+'33;color:'+c+';background:'+c+o+';'};
+  var h='';
 
-  h += '<div class="header"><div class="header-row"><div><div class="header-label">Sistema NT1</div><div class="header-title">Fernando 2.0</div></div><div style="text-align:right"><div class="header-date">'+fmtDate(todayStr)+'</div><div class="header-time">'+now.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit',hour12:false})+'</div></div></div>';
-  h += '<div class="stats"><div class="stat" style="border-left-color:var(--green)"><div class="stat-label">Zydilo</div><div class="stat-val" style="color:var(--green)">'+(zydiloToday*50)+'mg<span class="stat-unit">/ 200</span></div></div>';
-  h += '<div class="stat" style="border-left-color:var(--yellow)"><div class="stat-label">Caf\u00e9</div><div class="stat-val" style="color:var(--yellow)">'+coffeeToday+'<span class="stat-unit">dosis</span></div></div>';
-  h += '<div class="stat" style="border-left-color:'+(state.napActive?'var(--indigo)':'var(--text4)')+'"><div class="stat-label">Siesta</div><div class="stat-val" style="color:'+(state.napActive?'var(--indigo)':'var(--text4)')+'">'+(state.napActive?'ACTIVA':'\u2014')+'</div></div></div></div>';
+  // Header
+  var syncColor=state.synced?'#4ADE80':'#EF4444';
+  h+='<div class="header"><div class="header-row"><div><div class="header-label">Sistema NT1 <span class="sync-dot" style="background:'+syncColor+'" title="'+(state.synced?'Sincronizado':'Sin conexi\u00f3n')+'"></span></div><div class="header-title">Fernando 2.0</div></div><div style="text-align:right"><div class="header-date">'+fmtDate(dy)+'</div><div class="header-time">'+now.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit',hour12:false})+'</div></div></div>';
+  h+='<div class="stats"><div class="stat" style="border-left-color:var(--green)"><div class="stat-label">Zydilo</div><div class="stat-val" style="color:var(--green)">'+(zc*50)+'mg<span class="stat-unit">/ 200</span></div></div>';
+  h+='<div class="stat" style="border-left-color:var(--yellow)"><div class="stat-label">Caf\u00e9</div><div class="stat-val" style="color:var(--yellow)">'+cc+'<span class="stat-unit">dosis</span></div></div>';
+  h+='<div class="stat" style="border-left-color:'+(state.napActive?'var(--indigo)':'var(--text4)')+'"><div class="stat-label">Siesta</div><div class="stat-val" style="color:'+(state.napActive?'var(--indigo)':'var(--text4)')+'">'+(state.napActive?'ACTIVA':'\u2014')+'</div></div></div></div>';
 
-  h += '<div class="nav"><button class="'+(state.view==='log'?'active':'')+'" onclick="setView(\'log\')">Registrar</button><button class="'+(state.view==='schedule'?'active':'')+'" onclick="setView(\'schedule\')">Protocolo</button><button class="'+(state.view==='history'?'active':'')+'" onclick="setView(\'history\')">Historial</button><button class="'+(state.view==='export'?'active':'')+'" onclick="setView(\'export\')">Expediente</button></div>';
+  // Nav
+  h+='<div class="nav"><button class="'+(state.view==='log'?'active':'')+'" onclick="setView(\'log\')">Registrar</button><button class="'+(state.view==='schedule'?'active':'')+'" onclick="setView(\'schedule\')">Protocolo</button><button class="'+(state.view==='history'?'active':'')+'" onclick="setView(\'history\')">Historial</button><button class="'+(state.view==='export'?'active':'')+'" onclick="setView(\'export\')">Expediente</button></div>';
 
-  if (state.view === 'log') {
-    h += '<div class="section"><div class="section-title">Farmacolog\u00eda</div><div class="grid2"><button class="btn-event btn-colored" style="'+cs('#4ADE80','11')+'" onclick="logEvent(\'ZYDILO\')"><span class="icon">\u{1F48A}</span><span class="label">Zydilo 50mg</span></button><button class="btn-event btn-colored" style="'+cs('#F59E0B','11')+'" onclick="logEvent(\'COFFEE\')"><span class="icon">\u2615</span><span class="label">Caf\u00e9 \u00BC taza</span></button></div></div>';
-    h += '<div class="section"><div class="section-title">Nutrici\u00f3n</div><div class="grid3"><button class="btn-event btn-colored" style="'+cs('#60A5FA','11')+'" onclick="logEvent(\'MEAL_LC\')"><span class="icon">\u{1F95A}</span><span class="label">Low-Carb</span></button><button class="btn-event btn-colored" style="'+cs('#FB923C','11')+'" onclick="logEvent(\'MEAL_CARB\')"><span class="icon">\u{1F35E}</span><span class="label">c/Carbos</span></button><button class="btn-event btn-colored" style="'+cs('#A78BFA','11')+'" onclick="logEvent(\'CREATINE\')"><span class="icon">\u26A1</span><span class="label">Creatina</span></button></div></div>';
-
-    var napC = state.napActive ? '#F59E0B' : '#818CF8';
-    var napT = state.napActive ? 'NAP_END' : 'NAP_START';
-    var napI = state.napActive ? '\u23F0' : '\u{1F634}';
-    var napL = state.napActive ? 'Terminar Siesta' : 'Iniciar Siesta';
-    h += '<div class="section"><div class="section-title">Sue\u00f1o y Eventos Cl\u00ednicos</div><div class="grid2"><button class="btn-event btn-colored '+(state.napActive?'nap-active':'')+'" style="'+cs(napC,'15')+'" onclick="logEvent(\''+napT+'\')"><span class="icon">'+napI+'</span><span class="label">'+napL+'</span></button><button class="btn-event btn-colored" style="'+cs('#F87171','11')+'" onclick="setModal(\'cataplexy\')"><span class="icon">\u26A0\uFE0F</span><span class="label">Cataplej\u00eda</span></button></div><div class="grid2" style="margin-top:8px"><button class="btn-sm btn-colored" style="'+cs('#EF4444','11')+'" onclick="logEvent(\'SDE\')">\u{1F534} Ataque SDE</button><button class="btn-sm btn-colored" style="'+cs('#E2E8F0','11')+'" onclick="setModal(\'energy\')">\u{1F4CA} Energ\u00eda Ahora</button></div></div>';
-
-    h += '<div class="section"><div class="section-title">Activaci\u00f3n y Suplementos</div><div class="grid2"><button class="btn-sm btn-colored" style="'+cs('#06B6D4','11')+'" onclick="logEvent(\'GRIPPER\')">\u270A Micro-activaci\u00f3n</button><button class="btn-sm btn-colored" style="'+cs('#34D399','11')+'" onclick="logEvent(\'ROMERO\')">\u{1F33F} Romero 300ml</button></div></div>';
-
-    h += '<div class="section"><div class="section-title">Se\u00f1ales del Cuerpo</div><div class="grid3"><button class="btn-sm btn-colored" style="'+cs('#FB7185','11')+'" onclick="logEvent(\'GI\')">\u{1F525} Malestar GI</button><button class="btn-sm btn-colored" style="'+cs('#A78BFA','11')+'" onclick="logEvent(\'WAKE_NIGHT\')">\u{1F319} Despertar</button><button class="btn-sm btn-colored" style="'+cs('#C084FC','11')+'" onclick="logEvent(\'DREAM\')">\u{1F4AD} Sue\u00f1o V\u00edvido</button></div></div>';
-
-    if (todayEvents.length > 0) {
-      h += '<div class="section" style="margin-bottom:20px"><div class="section-title">Registro de hoy</div><div class="timeline">';
-      todayEvents.forEach(function(ev) {
-        var t = TYPES[ev.type]; var ex = '';
-        if (ev.energy) ex = ' \u2014 '+ev.energy+'/10';
-        if (ev.trigger) ex = ' \u2014 '+ev.trigger;
-        h += '<div class="timeline-item"><div class="timeline-dot" style="background:'+t.color+'"></div><div class="timeline-info"><span class="timeline-time">'+fmtTime(ev.ts)+'</span><span>'+t.icon+'</span><span class="timeline-label" style="color:'+t.color+'">'+t.label+ex+'</span></div><button class="btn-delete" onclick="deleteEvent(\''+ev.id+'\')">\u00d7</button></div>';
-      });
-      h += '</div></div>';
+  // LOG
+  if(state.view==='log'){
+    h+='<div class="section"><div class="section-title">Farmacolog\u00eda</div><div class="grid2"><button class="btn-event btn-colored" style="'+cs('#4ADE80','11')+'" onclick="logEvent(\'ZYDILO\')"><span class="icon">\u{1F48A}</span><span class="label">Zydilo 50mg</span></button><button class="btn-event btn-colored" style="'+cs('#F59E0B','11')+'" onclick="logEvent(\'COFFEE\')"><span class="icon">\u2615</span><span class="label">Caf\u00e9 \u00BC taza</span></button></div></div>';
+    h+='<div class="section"><div class="section-title">Nutrici\u00f3n</div><div class="grid3"><button class="btn-event btn-colored" style="'+cs('#60A5FA','11')+'" onclick="logEvent(\'MEAL_LC\')"><span class="icon">\u{1F95A}</span><span class="label">Low-Carb</span></button><button class="btn-event btn-colored" style="'+cs('#FB923C','11')+'" onclick="logEvent(\'MEAL_CARB\')"><span class="icon">\u{1F35E}</span><span class="label">c/Carbos</span></button><button class="btn-event btn-colored" style="'+cs('#A78BFA','11')+'" onclick="logEvent(\'CREATINE\')"><span class="icon">\u26A1</span><span class="label">Creatina</span></button></div></div>';
+    var nc=state.napActive?'#F59E0B':'#818CF8',nt=state.napActive?'NAP_END':'NAP_START',ni=state.napActive?'\u23F0':'\u{1F634}',nl=state.napActive?'Terminar Siesta':'Iniciar Siesta';
+    h+='<div class="section"><div class="section-title">Sue\u00f1o y Eventos</div><div class="grid2"><button class="btn-event btn-colored '+(state.napActive?'nap-active':'')+'" style="'+cs(nc,'15')+'" onclick="logEvent(\''+nt+'\')"><span class="icon">'+ni+'</span><span class="label">'+nl+'</span></button><button class="btn-event btn-colored" style="'+cs('#F87171','11')+'" onclick="setModal(\'cataplexy\')"><span class="icon">\u26A0\uFE0F</span><span class="label">Cataplej\u00eda</span></button></div><div class="grid2" style="margin-top:8px"><button class="btn-sm btn-colored" style="'+cs('#EF4444','11')+'" onclick="logEvent(\'SDE\')">\u{1F534} Ataque SDE</button><button class="btn-sm btn-colored" style="'+cs('#E2E8F0','11')+'" onclick="setModal(\'energy\')">\u{1F4CA} Energ\u00eda</button></div></div>';
+    h+='<div class="section"><div class="section-title">Activaci\u00f3n y Suplementos</div><div class="grid2"><button class="btn-sm btn-colored" style="'+cs('#06B6D4','11')+'" onclick="logEvent(\'GRIPPER\')">\u270A Micro-activaci\u00f3n</button><button class="btn-sm btn-colored" style="'+cs('#34D399','11')+'" onclick="logEvent(\'ROMERO\')">\u{1F33F} Romero 300ml</button></div></div>';
+    h+='<div class="section"><div class="section-title">Se\u00f1ales del Cuerpo</div><div class="grid3"><button class="btn-sm btn-colored" style="'+cs('#FB7185','11')+'" onclick="logEvent(\'GI\')">\u{1F525} GI</button><button class="btn-sm btn-colored" style="'+cs('#A78BFA','11')+'" onclick="logEvent(\'WAKE_NIGHT\')">\u{1F319} Despertar</button><button class="btn-sm btn-colored" style="'+cs('#C084FC','11')+'" onclick="logEvent(\'DREAM\')">\u{1F4AD} Sue\u00f1o</button></div></div>';
+    if(te.length>0){
+      h+='<div class="section" style="margin-bottom:20px"><div class="section-title">Hoy</div><div class="timeline">';
+      te.forEach(function(ev){var t=TYPES[ev.type];var ex='';if(ev.energy)ex=' \u2014 '+ev.energy+'/10';if(ev.trigger)ex=' \u2014 '+ev.trigger;
+      h+='<div class="timeline-item"><div class="timeline-dot" style="background:'+t.color+'"></div><div class="timeline-info"><span class="timeline-time">'+fmtTime(ev.ts)+'</span><span>'+t.icon+'</span><span class="timeline-label" style="color:'+t.color+'">'+t.label+ex+'</span></div><button class="btn-delete" onclick="deleteEvent(\''+ev.id+'\')">\u00d7</button></div>';});
+      h+='</div></div>';
     }
   }
 
-  if (state.view === 'schedule') {
-    h += '<div class="section"><div class="section-title">Protocolo de Notificaciones</div>';
-    if (state.notifPermission !== 'granted') {
-      h += '<div class="notif-banner"><div class="notif-banner-text">Las notificaciones est\u00e1n desactivadas.<br>Act\u00edvalas para recibir recordatorios.</div><button class="btn-notif-enable" onclick="requestNotifPermission()">\u{1F514} Activar Notificaciones</button></div>';
-    } else {
-      h += '<div style="padding:10px 14px;background:rgba(74,222,128,0.1);border:1px solid rgba(74,222,128,0.3);border-radius:10px;margin-bottom:16px;display:flex;align-items:center;gap:8px"><span style="font-size:14px">\u{1F514}</span><span style="font-size:12px;color:var(--green)">Notificaciones activas</span></div>';
-    }
-    var groups = { am: '\u2600\uFE0F Ma\u00f1ana \u2014 Arranque', work: '\u{1F3ED} Jornada \u2014 Planta', pm: '\u{1F319} Tarde/Noche \u2014 Cierre' };
-    var cg = '';
-    state.schedule.forEach(function(item) {
-      if (item.group !== cg) { cg = item.group; h += '<div class="sched-section-label">'+(groups[item.group]||item.group)+'</div>'; }
-      h += '<div class="sched-item" style="opacity:'+(item.enabled?'1':'0.4')+'"><div class="sched-left"><span class="sched-icon">'+item.icon+'</span><div class="sched-info"><span class="sched-name">'+item.label+'</span><span class="sched-desc">'+item.desc+'</span></div></div><div class="sched-right"><input type="time" class="sched-time-input" value="'+item.time+'" onchange="updateSchedTime(\''+item.id+'\', this.value)"><label class="toggle"><input type="checkbox" '+(item.enabled?'checked':'')+' onchange="toggleSchedItem(\''+item.id+'\')"><span class="toggle-slider"></span></label></div></div>';
+  // SCHEDULE
+  if(state.view==='schedule'){
+    h+='<div class="section"><div class="section-title">Protocolo</div>';
+    if(state.notifPermission!=='granted'){h+='<div class="notif-banner"><div class="notif-banner-text">Notificaciones desactivadas.</div><button class="btn-notif-enable" onclick="requestNotifPermission()">\u{1F514} Activar</button></div>';}
+    else{h+='<div style="padding:10px 14px;background:rgba(74,222,128,0.1);border:1px solid rgba(74,222,128,0.3);border-radius:10px;margin-bottom:16px;display:flex;align-items:center;gap:8px"><span>\u{1F514}</span><span style="font-size:12px;color:var(--green)">Notificaciones activas</span></div>';}
+    var gs={am:'\u2600\uFE0F Ma\u00f1ana',work:'\u{1F3ED} Jornada',pm:'\u{1F319} Noche'},cg='';
+    state.schedule.forEach(function(item){
+      if(item.group!==cg){cg=item.group;h+='<div class="sched-section-label">'+(gs[item.group]||'')+'</div>';}
+      h+='<div class="sched-item" style="opacity:'+(item.enabled?'1':'0.4')+'"><div class="sched-left"><span class="sched-icon">'+item.icon+'</span><div class="sched-info"><span class="sched-name">'+item.label+'</span><span class="sched-desc">'+item.desc+'</span></div></div><div class="sched-right"><input type="time" class="sched-time-input" value="'+item.time+'" onchange="updateSchedTime(\''+item.id+'\',this.value)"><label class="toggle"><input type="checkbox" '+(item.enabled?'checked':'')+' onchange="toggleSchedItem(\''+item.id+'\')"><span class="toggle-slider"></span></label></div></div>';
     });
-    h += '<button style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;color:var(--text3);font-size:11px;font-family:inherit;margin-top:12px" onclick="resetSchedule()">Restaurar horarios por defecto</button></div>';
+    h+='<button style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;color:var(--text3);font-size:11px;font-family:inherit;margin-top:12px" onclick="resetSchedule()">Restaurar defecto</button></div>';
   }
 
-  if (state.view === 'history') {
-    h += '<div class="section"><div class="section-title">Historial ('+state.events.length+' registros)</div>';
-    if (uniqueDates.length === 0) { h += '<div class="empty">Sin registros todav\u00eda.</div>'; }
-    else { uniqueDates.forEach(function(date) {
-      var dayEvs = state.events.filter(function(e){return e.date===date}).sort(function(a,b){return new Date(a.ts)-new Date(b.ts)});
-      var act = state.selectedDate === date;
-      h += '<button class="day-btn '+(act?'active':'')+'" onclick="toggleDate(\''+date+'\')"><span>'+fmtDate(date)+'</span><span class="day-count">'+dayEvs.length+' eventos</span></button>';
-      if (act) { h += '<div class="day-events">'; dayEvs.forEach(function(ev) {
-        var t = TYPES[ev.type]; var ex = '';
-        if (ev.energy) ex = '<span style="color:var(--text3)"> \u2014 '+ev.energy+'/10</span>';
-        if (ev.trigger) ex = '<span style="color:var(--text3)"> \u2014 '+ev.trigger+'</span>';
-        h += '<div class="day-event"><span class="day-event-time">'+fmtTime(ev.ts)+'</span><span>'+t.icon+'</span><span style="color:'+t.color+'">'+t.label+'</span>'+ex+'</div>';
-      }); h += '</div>'; }
-    }); }
-    h += '</div>';
+  // HISTORY
+  if(state.view==='history'){
+    h+='<div class="section"><div class="section-title" style="display:flex;justify-content:space-between;align-items:center">Historial ('+state.events.length+')<button style="font-size:10px;color:var(--green);border:1px solid var(--green);border-radius:6px;padding:4px 8px;font-family:inherit" onclick="refreshSync()">\u{1F504} Sync</button></div>';
+    if(ud.length===0){h+='<div class="empty">Sin registros.</div>';}
+    else{ud.forEach(function(date){
+      var de=state.events.filter(function(e){return e.date===date}).sort(function(a,b){return new Date(a.ts)-new Date(b.ts)});
+      var act=state.selectedDate===date;
+      h+='<button class="day-btn '+(act?'active':'')+'" onclick="toggleDate(\''+date+'\')"><span>'+fmtDate(date)+'</span><span class="day-count">'+de.length+' eventos</span></button>';
+      if(act){h+='<div class="day-events">';de.forEach(function(ev){var t=TYPES[ev.type];var ex='';if(ev.energy)ex='<span style="color:var(--text3)"> \u2014 '+ev.energy+'/10</span>';if(ev.trigger)ex='<span style="color:var(--text3)"> \u2014 '+ev.trigger+'</span>';
+      h+='<div class="day-event"><span class="day-event-time">'+fmtTime(ev.ts)+'</span><span>'+t.icon+'</span><span style="color:'+t.color+'">'+t.label+'</span>'+ex+'</div>';});h+='</div>';}
+    });}h+='</div>';
   }
 
-  if (state.view === 'export') {
-    var cnt = function(t) { return state.events.filter(function(e){return e.type===t}).length; };
-    h += '<div class="section"><div class="section-title">Expediente Cl\u00ednico NT1</div><div class="export-card"><h3>Resumen de Datos</h3><div class="export-stat">';
-    h += 'Total de registros: <span class="export-val" style="color:var(--green)">'+state.events.length+'</span><br>';
-    h += 'D\u00edas registrados: <span class="export-val" style="color:var(--green)">'+uniqueDates.length+'</span><br>';
-    h += 'Dosis Zydilo: <span class="export-val" style="color:var(--green)">'+cnt('ZYDILO')+'</span><br>';
-    h += 'Cataplej\u00eda: <span class="export-val" style="color:var(--redLight)">'+cnt('CATAPLEXY')+'</span><br>';
-    h += 'Ataques SDE: <span class="export-val" style="color:var(--red)">'+cnt('SDE')+'</span><br>';
-    h += 'Siestas: <span class="export-val" style="color:var(--indigo)">'+cnt('NAP_START')+'</span><br>';
-    h += 'Malestares GI: <span class="export-val" style="color:var(--pink)">'+cnt('GI')+'</span><br>';
-    h += 'Despertares: <span class="export-val" style="color:var(--purple)">'+cnt('WAKE_NIGHT')+'</span><br>';
-    h += 'Sue\u00f1os v\u00edvidos: <span class="export-val" style="color:var(--violet)">'+cnt('DREAM')+'</span>';
-    h += '</div></div><button class="btn-export" onclick="exportCSV()">\u{1F4E5} Exportar CSV</button>';
-    h += '<div style="font-size:11px;color:var(--text4);text-align:center;margin-top:8px">Se abre en Excel o se importa en Notion.</div>';
-    h += '<button class="btn-danger" onclick="clearAll()">Borrar todos los datos</button></div>';
+  // EXPORT
+  if(state.view==='export'){
+    var cnt=function(t){return state.events.filter(function(e){return e.type===t}).length};
+    h+='<div class="section"><div class="section-title">Expediente NT1</div><div class="export-card"><h3>Resumen</h3><div class="export-stat">';
+    h+='Registros: <span class="export-val" style="color:var(--green)">'+state.events.length+'</span><br>';
+    h+='D\u00edas: <span class="export-val" style="color:var(--green)">'+ud.length+'</span><br>';
+    h+='Zydilo: <span class="export-val" style="color:var(--green)">'+cnt('ZYDILO')+'</span><br>';
+    h+='Cataplej\u00eda: <span class="export-val" style="color:var(--redLight)">'+cnt('CATAPLEXY')+'</span><br>';
+    h+='SDE: <span class="export-val" style="color:var(--red)">'+cnt('SDE')+'</span><br>';
+    h+='Siestas: <span class="export-val" style="color:var(--indigo)">'+cnt('NAP_START')+'</span><br>';
+    h+='GI: <span class="export-val" style="color:var(--pink)">'+cnt('GI')+'</span><br>';
+    h+='Despertares: <span class="export-val" style="color:var(--purple)">'+cnt('WAKE_NIGHT')+'</span><br>';
+    h+='Sue\u00f1os: <span class="export-val" style="color:var(--violet)">'+cnt('DREAM')+'</span>';
+    h+='</div></div><button class="btn-export" onclick="exportCSV()">\u{1F4E5} Exportar CSV</button>';
+    h+='<div style="font-size:11px;color:var(--text4);text-align:center;margin-top:8px">Excel o Notion</div>';
+    h+='<button class="btn-danger" onclick="clearAll()">Borrar todo</button></div>';
   }
 
-  if (state.modal === 'energy') {
-    h += '<div class="modal-overlay" onclick="setModal(null)"><div class="modal" onclick="event.stopPropagation()"><div class="modal-title">\u00bfC\u00f3mo est\u00e1 tu energ\u00eda ahora?</div><div class="energy-grid">';
-    for (var i=1;i<=10;i++) { var c=i<=3?'var(--red)':i<=6?'var(--yellow)':'var(--green)'; var bg=i<=3?'#EF444422':i<=6?'#F59E0B22':'#4ADE8022'; h += '<button class="energy-btn" style="background:'+bg+';color:'+c+'" onclick="logEvent(\'ENERGY\',{energy:'+i+'});setModal(null)">'+i+'</button>'; }
-    h += '</div><div class="energy-labels"><span>Apagado</span><span>Neutro</span><span>Al 100%</span></div></div></div>';
+  // MODALS
+  if(state.modal==='energy'){
+    h+='<div class="modal-overlay" onclick="setModal(null)"><div class="modal" onclick="event.stopPropagation()"><div class="modal-title">Energ\u00eda ahora</div><div class="energy-grid">';
+    for(var i=1;i<=10;i++){var c=i<=3?'var(--red)':i<=6?'var(--yellow)':'var(--green)',bg=i<=3?'#EF444422':i<=6?'#F59E0B22':'#4ADE8022';h+='<button class="energy-btn" style="background:'+bg+';color:'+c+'" onclick="logEvent(\'ENERGY\',{energy:'+i+'});setModal(null)">'+i+'</button>';}
+    h+='</div><div class="energy-labels"><span>Apagado</span><span>Neutro</span><span>Al 100%</span></div></div></div>';
   }
-  if (state.modal === 'cataplexy') {
-    h += '<div class="modal-overlay" onclick="setModal(null)"><div class="modal" onclick="event.stopPropagation()"><div class="modal-title" style="color:var(--redLight)">\u26A0\uFE0F Registrar Cataplej\u00eda</div><div class="modal-sub">\u00bfQu\u00e9 deton\u00f3 el episodio?</div><div class="trigger-grid">';
-    ['Risa','Susto','Sorpresa','Estr\u00e9s','Emoci\u00f3n fuerte','Otro'].forEach(function(t) { h += '<button class="trigger-btn" onclick="logEvent(\'CATAPLEXY\',{trigger:\''+t+'\'});setModal(null)">'+t+'</button>'; });
-    h += '</div></div></div>';
+  if(state.modal==='cataplexy'){
+    h+='<div class="modal-overlay" onclick="setModal(null)"><div class="modal" onclick="event.stopPropagation()"><div class="modal-title" style="color:var(--redLight)">\u26A0\uFE0F Cataplej\u00eda</div><div class="modal-sub">\u00bfQu\u00e9 deton\u00f3?</div><div class="trigger-grid">';
+    ['Risa','Susto','Sorpresa','Estr\u00e9s','Emoci\u00f3n fuerte','Otro'].forEach(function(t){h+='<button class="trigger-btn" onclick="logEvent(\'CATAPLEXY\',{trigger:\''+t+'\'});setModal(null)">'+t+'</button>';});
+    h+='</div></div></div>';
   }
-  if (state.toast) h += '<div class="toast">'+state.toast+'</div>';
-  document.getElementById('app').innerHTML = h;
+  if(state.toast)h+='<div class="toast">'+state.toast+'</div>';
+  document.getElementById('app').innerHTML=h;
 }
-setInterval(function(){ if(state.view==='log'||state.view==='schedule') render(); }, 60000);
-render();
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function(){});
+setInterval(function(){if(state.view==='log'||state.view==='schedule')render()},60000);
+// Auto-refresh from Firebase every 2 min
+setInterval(function(){fbLoad()},120000);
+// Initial load
+fbLoad();
+checkSchedule();
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(function(){});
 </script>
 </body>
 </html>
